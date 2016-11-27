@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf14780304216910" configfile="/f16g321/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="dataImport" x="338" y="178" id="pf14780307261021" referenceLink="//@navigationRule.9/@navigationCase.1/@toViewId|" outlinks="pf14780307261022 pf14780307261023 pf14781039027270" inlinks="pf14780307261022 pf14780307261023 pf14801024174730" path="/dataImport.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="databaseLogin" x="122" y="562" id="pf14780317148910" referenceLink="//@navigationRule.6/@fromViewId|" outlinks="pf14780317148911 pf14780317148922 pf14787603529938" inlinks="pf14780317148922" path="/databaseLogin.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="selectRole" x="338" y="562" id="pf14780317148923" referenceLink="//@navigationRule.6/@navigationCase.0/@toViewId|" outlinks="pf14781039027391" inlinks="pf14780317148911 pf14787594274507 pf14790686078040" path="/selectRole.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="student" x="338" y="946" id="pf14780477312295" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf14780477313066" path="/student.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="logout" x="554" y="946" id="pf14780477313077" referenceLink="//@navigationRule.9/@navigationCase.1/@toViewId|" inlinks="pf14780477313066 pf14780477313079 pf14781039027270 pf14781039027391 pf14787221621500 pf14787576481595 pf14801024174741" path="/logout.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="dataImport" x="122" y="1011" id="pf147804773130711" referenceLink="//@navigationRule.2/@fromViewId|" path="/dataImport.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="dBAccess" x="338" y="1330" id="pf147804773130712" referenceLink="//@navigationRule.5/@navigationCase.2/@toViewId|" outlinks="pf14780477313079 pf14787555669550 pf14787594274507" inlinks="pf14787576481596" path="/dBAccess.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="selectRole" x="122" y="1459" id="pf147804773130713" referenceLink="//@navigationRule.4/@fromViewId|" path="/selectRole.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="test" x="122" y="1906" id="pf14787221621551" referenceLink="//@navigationRule.7/@fromViewId|" outlinks="pf14787221621552 pf14787221621553" path="/test.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="feedback" x="338" y="1714" id="pf14787221621554" referenceLink="//@navigationRule.9/@fromViewId|" outlinks="pf14787221621500" inlinks="pf14787221621552" path="/feedback.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="error" x="338" y="2098" id="pf14787221621555" referenceLink="//@navigationRule.7/@navigationCase.1/@toViewId|" inlinks="pf14787221621553" path="/error.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="createDropTable" id="pf14787555669562" referenceLink="//@navigationRule.5/@fromViewId|" outlinks="pf14787576481595 pf14787576481596 pf14790686078040" inlinks="pf14787555669550" path="/createDropTable.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="index" id="pf14787603529939" referenceLink="//@navigationRule.6/@navigationCase.2/@toViewId|" inlinks="pf14787603529938" path="/index.jsp"/>
+  <nodes xsi:type="pageflow:PFPage" name="instructor" id="pf14801024174742" referenceLink="//@navigationRule.9/@fromViewId|" outlinks="pf14801024174741 pf14801024174730" path="/instructor.jsp"/>
+  <links id="pf14780317148911" target="pf14780317148923" source="pf14780317148910" outcome="SUCCESS"/>
+  <links id="pf14780477313066" target="pf14780477313077" source="pf14780477312295" outcome="LOGOUT"/>
+  <links id="pf14780477313079" target="pf14780477313077" source="pf147804773130712" outcome="LOGOUT"/>
+  <links id="pf14781039027270" target="pf14780477313077" source="pf14780307261021" outcome="LOGOUT"/>
+  <links id="pf14781039027391" target="pf14780477313077" source="pf14780317148923" outcome="LOGOUT"/>
+  <links id="pf14787221621552" target="pf14787221621554" source="pf14787221621551" outcome="Success" redirect="true"/>
+  <links id="pf14787221621553" target="pf14787221621555" source="pf14787221621551" outcome="Failure"/>
+  <links id="pf14787221621500" target="pf14780477313077" source="pf14787221621554" outcome="LOGOUT"/>
+  <links id="pf14780307261022" target="pf14780307261021" source="pf14780307261021" outcome="Success" redirect="true">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
+  <links id="pf14780307261023" target="pf14780307261021" source="pf14780307261021" outcome="Failure">
+    <bendPoints d1Height="-66" d2Height="-66"/>
+    <bendPoints d1Width="-94" d1Height="-66" d2Width="-94" d2Height="-66"/>
+    <bendPoints d1Width="-94" d2Width="-94"/>
+  </links>
+  <links id="pf14780317148922" target="pf14780317148910" source="pf14780317148910" outcome="Failure">
+    <bendPoints d1Height="-36" d2Height="-36"/>
+    <bendPoints d1Width="-64" d1Height="-36" d2Width="-64" d2Height="-36"/>
+    <bendPoints d1Width="-64" d2Width="-64"/>
+  </links>
+  <links id="pf14787555669550" target="pf14787555669562" source="pf147804773130712" outcome="NEXT"/>
+  <links id="pf14787576481595" target="pf14780477313077" source="pf14787555669562" outcome="LOGOUT"/>
+  <links id="pf14787576481596" target="pf147804773130712" source="pf14787555669562" outcome="BACK"/>
+  <links id="pf14787594274507" target="pf14780317148923" source="pf147804773130712" outcome="BACK"/>
+  <links id="pf14787603529938" target="pf14787603529939" source="pf14780317148910" outcome="BACK"/>
+  <links id="pf14790686078040" target="pf14780317148923" source="pf14787555669562" outcome="NEXT"/>
+  <links id="pf14801024174741" target="pf14780477313077" source="pf14801024174742" outcome="LOGOUT"/>
+  <links id="pf14801024174730" target="pf14780307261021" source="pf14801024174742" outcome="NEXT"/>
+</pageflow:Pageflow>
