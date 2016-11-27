@@ -87,7 +87,7 @@
 						cellspacing="0" cellpadding="1"
 						columnClasses="columnClass1 border" headerClass="headerClass"
 						footerClass="footerClass" rowClasses="rowClass2"
-						styleClass="dataTableEx" width="900">
+						styleClass="dataTableEx" width="700">
 						<t:columns var="col"
 							value="#{dBAccessActionBean.columnNamesSelected}">
 							<f:facet name="header">

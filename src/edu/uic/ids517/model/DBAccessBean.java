@@ -288,7 +288,9 @@ public class DBAccessBean {
 			
 				if (resultSet != null) {
 					int numOfCols = resultSetMetaData.getColumnCount();
-					
+					resultSet.last();
+					numOfRows = resultSet.getRow();
+					resultSet.beforeFirst();
 					while (resultSet.next()) {
 						String[] output = new String[numOfCols];
 

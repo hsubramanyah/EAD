@@ -28,26 +28,48 @@ public class DBAccessActionBean {
 			"f16g321_student", "f16g321_instructor", "f16g321_ins_course", "f16g321_student_enroll", "f16g321_test",
 			"f16g321_questions", "f16g321_feedback", "f16g321_scores"));
 	private List<String> createDropTableNames;
-	private static final String f16g321_user = "create table f16g321_user ( user_name VARCHAR(20) not null, password VARCHAR(20) not null, role VARCHAR(20),last_logintime datetime, last_login_ip VARCHAR(20), CONSTRAINT Pk_User primary key (user_name)); ";
 
-	private static final String f16g321_course = "create table f16g321_course (crn Numeric(10) not null, code VARCHAR(20) not null, description VARCHAR(50) ,CONSTRAINT Pk_code primary key (code))  ;";
-
-	private static final String f16g321_student = "create table f16g321_student (uin Numeric(10) not null, last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , last_logintime datetime , last_login_ip VARCHAR(20),CONSTRAINT Pk_Uin primary key (uin)) ;";
-
-	private static final String f16g321_instructor = "create table f16g321_instructor (ins_id Numeric(10), last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , CONSTRAINT Pk_ins_id primary key (ins_id)) ;";
-
-	private static final String f16g321_ins_course = "create table f16g321_ins_course (ins_id Numeric(10) , code VARCHAR(20) , CONSTRAINT Pk_ins_crn primary key (code,ins_id), CONSTRAINT Fk_ins foreign key (ins_id ) REFERENCES f16g321_instructor(ins_id), CONSTRAINT Fk_crn2 foreign key (code ) REFERENCES f16g321_course(code)); ";
-
-	private static final String f16g321_student_enroll = "create table f16g321_student_enroll (code VARCHAR(20) , uin Numeric(10) , CONSTRAINT Pk_Crn primary key (code,uin), CONSTRAINT Fk_uin foreign key (uin ) REFERENCES f16g321_student(uin), CONSTRAINT Fk_CRN foreign key (code ) REFERENCES f16g321_course(code)); ";
-
-	private static final String f16g321_test = "create table f16g321_test (test_id VARCHAR(20) , code VARCHAR(20) , start_time datetime, end_time datetime, duration time, points_per_ques double, total double, CONSTRAINT Pk_testid primary key (test_id)); ";
-
-	private static final String f16g321_questions = "create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text text, correct_ans text, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); ";
-
-	private static final String f16g321_feedback = "create table f16g321_feedback (uin Numeric(10) , question_id MEDIUMINT , ans_selected VARCHAR(20) , CONSTRAINT Pk_feed primary key (question_id,uin), CONSTRAINT Fk_qid foreign key (question_id ) REFERENCES f16g321_questions(question_id), CONSTRAINT Fk_uin3 foreign key (uin ) REFERENCES f16g321_student(uin)); ";
-
-	private static final String f16g321_scores = "create table f16g321_scores (uin Numeric(10), test_id VARCHAR(20), score Numeric(10), CONSTRAINT Pk_score primary key (uin,test_id), CONSTRAINT Fk_tid1 foreign key (test_id ) REFERENCES f16g321_test(test_id), CONSTRAINT Fk_uin1 foreign key (uin ) REFERENCES f16g321_student(uin)); ";
-
+	/*
+	 * private static final String f16g321_user =
+	 * "create table f16g321_user ( user_name VARCHAR(20) not null, password VARCHAR(20) not null, role VARCHAR(20),last_logintime datetime, last_login_ip VARCHAR(20), CONSTRAINT Pk_User primary key (user_name)); "
+	 * ;
+	 * 
+	 * private static final String f16g321_course =
+	 * "create table f16g321_course (crn Numeric(10) not null, code VARCHAR(20) not null, description VARCHAR(50) ,CONSTRAINT Pk_code primary key (code))  ;"
+	 * ;
+	 * 
+	 * private static final String f16g321_student =
+	 * "create table f16g321_student (uin Numeric(10) not null, last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , last_logintime datetime , last_login_ip VARCHAR(20),CONSTRAINT Pk_Uin primary key (uin)) ;"
+	 * ;
+	 * 
+	 * private static final String f16g321_instructor =
+	 * "create table f16g321_instructor (ins_id Numeric(10), last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , CONSTRAINT Pk_ins_id primary key (ins_id)) ;"
+	 * ;
+	 * 
+	 * private static final String f16g321_ins_course =
+	 * "create table f16g321_ins_course (ins_id Numeric(10) , code VARCHAR(20) , CONSTRAINT Pk_ins_crn primary key (code,ins_id), CONSTRAINT Fk_ins foreign key (ins_id ) REFERENCES f16g321_instructor(ins_id), CONSTRAINT Fk_crn2 foreign key (code ) REFERENCES f16g321_course(code)); "
+	 * ;
+	 * 
+	 * private static final String f16g321_student_enroll =
+	 * "create table f16g321_student_enroll (code VARCHAR(20) , uin Numeric(10) , CONSTRAINT Pk_Crn primary key (code,uin), CONSTRAINT Fk_uin foreign key (uin ) REFERENCES f16g321_student(uin), CONSTRAINT Fk_CRN foreign key (code ) REFERENCES f16g321_course(code)); "
+	 * ;
+	 * 
+	 * private static final String f16g321_test =
+	 * "create table f16g321_test (test_id VARCHAR(20) , code VARCHAR(20) , start_time datetime, end_time datetime, duration time, points_per_ques double, total double, CONSTRAINT Pk_testid primary key (test_id)); "
+	 * ;
+	 * 
+	 * private static final String f16g321_questions =
+	 * "create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text text, correct_ans text, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); "
+	 * ;
+	 * 
+	 * private static final String f16g321_feedback =
+	 * "create table f16g321_feedback (uin Numeric(10) , question_id MEDIUMINT , ans_selected VARCHAR(20) , CONSTRAINT Pk_feed primary key (question_id,uin), CONSTRAINT Fk_qid foreign key (question_id ) REFERENCES f16g321_questions(question_id), CONSTRAINT Fk_uin3 foreign key (uin ) REFERENCES f16g321_student(uin)); "
+	 * ;
+	 * 
+	 * private static final String f16g321_scores =
+	 * "create table f16g321_scores (uin Numeric(10), test_id VARCHAR(20), score Numeric(10), CONSTRAINT Pk_score primary key (uin,test_id), CONSTRAINT Fk_tid1 foreign key (test_id ) REFERENCES f16g321_test(test_id), CONSTRAINT Fk_uin1 foreign key (uin ) REFERENCES f16g321_student(uin)); "
+	 * ;
+	 */
 	public List<String> getCreateDropTableNames() {
 		return createDropTableNames;
 	}
@@ -61,26 +83,35 @@ public class DBAccessActionBean {
 	HashMap<String, String> createHashMap = new HashMap<String, String>();
 
 	public DBAccessActionBean() {
-		createHashMap.put("f16g321_user", "create table f16g321_user ( user_name VARCHAR(20) not null, password VARCHAR(20) not null, role VARCHAR(20),last_logintime datetime, last_login_ip VARCHAR(20), CONSTRAINT Pk_User primary key (user_name)); ");
+		createHashMap.put("f16g321_user",
+				"create table f16g321_user ( user_name VARCHAR(20) not null, password VARCHAR(20) not null, role VARCHAR(20),last_logintime datetime, last_login_ip VARCHAR(20), CONSTRAINT Pk_User primary key (user_name)); ");
 
-		createHashMap.put("f16g321_course", "create table f16g321_course (crn Numeric(10) not null, code VARCHAR(20) not null, description VARCHAR(50) ,CONSTRAINT Pk_code primary key (code))  ;");
-		
-		createHashMap.put("f16g321_student", "create table f16g321_student (uin Numeric(10) not null, last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , last_logintime datetime , last_login_ip VARCHAR(20),CONSTRAINT Pk_Uin primary key (uin)) ;");
-		
-		createHashMap.put("f16g321_instructor", "create table f16g321_instructor (ins_id Numeric(10), last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , CONSTRAINT Pk_ins_id primary key (ins_id)) ;");
-		
-		createHashMap.put("f16g321_ins_course", "create table f16g321_ins_course (ins_id Numeric(10) , code VARCHAR(20) , CONSTRAINT Pk_ins_crn primary key (code,ins_id), CONSTRAINT Fk_ins foreign key (ins_id ) REFERENCES f16g321_instructor(ins_id), CONSTRAINT Fk_crn2 foreign key (code ) REFERENCES f16g321_course(code)); ");
-		
-		createHashMap.put("f16g321_student_enroll", "create table f16g321_student_enroll (code VARCHAR(20) , uin Numeric(10) , CONSTRAINT Pk_Crn primary key (code,uin), CONSTRAINT Fk_uin foreign key (uin ) REFERENCES f16g321_student(uin), CONSTRAINT Fk_CRN foreign key (code ) REFERENCES f16g321_course(code)); ");
-		
-		createHashMap.put("f16g321_test", "create table f16g321_test (test_id VARCHAR(20) , code VARCHAR(20) , start_time datetime, end_time datetime, duration time, points_per_ques double, total double, CONSTRAINT Pk_testid primary key (test_id)); ");
-		
-		createHashMap.put("f16g321_questions", "create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text text, correct_ans text, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); ");
-		
-		createHashMap.put("f16g321_feedback", "create table f16g321_feedback (uin Numeric(10) , question_id MEDIUMINT , ans_selected VARCHAR(20) , CONSTRAINT Pk_feed primary key (question_id,uin), CONSTRAINT Fk_qid foreign key (question_id ) REFERENCES f16g321_questions(question_id), CONSTRAINT Fk_uin3 foreign key (uin ) REFERENCES f16g321_student(uin)); ");
-		
-		createHashMap.put("f16g321_scores", "create table f16g321_scores (uin Numeric(10), test_id VARCHAR(20), score Numeric(10), CONSTRAINT Pk_score primary key (uin,test_id), CONSTRAINT Fk_tid1 foreign key (test_id ) REFERENCES f16g321_test(test_id), CONSTRAINT Fk_uin1 foreign key (uin ) REFERENCES f16g321_student(uin)); ");
+		createHashMap.put("f16g321_course",
+				"create table f16g321_course (crn Numeric(10) not null, code VARCHAR(20) not null, description VARCHAR(50) ,CONSTRAINT Pk_code primary key (code))  ;");
 
+		createHashMap.put("f16g321_student",
+				"create table f16g321_student (uin Numeric(10) not null, last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , last_access datetime , last_login_ip VARCHAR(20),CONSTRAINT Pk_Uin primary key (uin)) ;");
+
+		createHashMap.put("f16g321_instructor",
+				"create table f16g321_instructor (ins_id Numeric(10), last_name VARCHAR(20) not null, first_name VARCHAR(20), user_name VARCHAR(20) not null , CONSTRAINT Pk_ins_id primary key (ins_id)) ;");
+
+		createHashMap.put("f16g321_ins_course",
+				"create table f16g321_ins_course (ins_id Numeric(10) , code VARCHAR(20) , CONSTRAINT Pk_ins_crn primary key (code,ins_id), CONSTRAINT Fk_ins foreign key (ins_id ) REFERENCES f16g321_instructor(ins_id), CONSTRAINT Fk_crn2 foreign key (code ) REFERENCES f16g321_course(code)); ");
+
+		createHashMap.put("f16g321_student_enroll",
+				"create table f16g321_student_enroll (code VARCHAR(20) , uin Numeric(10) , total double, CONSTRAINT Pk_Crn primary key (code,uin), CONSTRAINT Fk_uin foreign key (uin ) REFERENCES f16g321_student(uin), CONSTRAINT Fk_CRN foreign key (code ) REFERENCES f16g321_course(code)); ");
+
+		createHashMap.put("f16g321_test",
+				"create table f16g321_test (test_id VARCHAR(20) , code VARCHAR(20) , start_time datetime, end_time datetime, duration time, points_per_ques double, total double, CONSTRAINT Pk_testid primary key (test_id)); ");
+
+		createHashMap.put("f16g321_questions",
+				"create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text text, correct_ans text, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); ");
+
+		createHashMap.put("f16g321_feedback",
+				"create table f16g321_feedback (uin Numeric(10) , question_id MEDIUMINT , ans_selected VARCHAR(20) , CONSTRAINT Pk_feed primary key (question_id,uin), CONSTRAINT Fk_qid foreign key (question_id ) REFERENCES f16g321_questions(question_id), CONSTRAINT Fk_uin3 foreign key (uin ) REFERENCES f16g321_student(uin)); ");
+
+		createHashMap.put("f16g321_scores",
+				"create table f16g321_scores (uin Numeric(10), test_id VARCHAR(20), score Numeric(10), code VARCHAR(20) , CONSTRAINT Pk_score primary key (uin,test_id), CONSTRAINT Fk_tid1 foreign key (test_id ) REFERENCES f16g321_test(test_id), CONSTRAINT Fk_uin1 foreign key (uin ) REFERENCES f16g321_student(uin),CONSTRAINT Fk_code4 foreign key (code) REFERENCES  f16g321_course(code)); ");
 
 	}
 

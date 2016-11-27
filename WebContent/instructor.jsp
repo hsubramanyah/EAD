@@ -2,7 +2,7 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="f" uri="http://java.sun.com/jsf/core"%>
 <%@ taglib prefix="h" uri="http://java.sun.com/jsf/html"%>
-<%@ taglib prefix="t" uri="http://myfaces.apache.org/tomahawk"%> 
+<%@ taglib prefix="t" uri="http://myfaces.apache.org/tomahawk"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,7 +10,7 @@
 <title>f16g321 Instructor Page</title>
 </head>
 <body>
-	<f:view>  
+	<f:view>
 		<h3 align="center">f16g321 Instructor Page</h3>
 		<hr />
 		<br />
@@ -24,8 +24,7 @@
 					action="#{dBAccessActionBean.next}" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
 					action="#{dBAccessActionBean.logout}" />
-				<h:commandButton type="submit" value="test"
-					action="#{test.displayCourseRoster}" />
+
 
 			</h:form>
 			<br /> <br />
@@ -47,7 +46,9 @@
 						action="#{instructorActionBean.displayCourseRoster}" />
 					<h:commandButton type="submit" value="Display Test Questions"
 						action="#{instructorActionBean.displayTestQuestions}" />
-						<h:commandButton type="submit" value="Display Test chart"
+					<h:commandButton type="submit" value="test"
+						action="#{instructorActionBean.displayDynamicCourseRoster}" />
+					<h:commandButton type="submit" value="Display Test chart"
 						action="#{instructorActionBean.createPieChart}" />
 
 
@@ -93,6 +94,14 @@
 						action="#{instructorActionBean.exportTestCsv}" />
 					<h:commandButton type="submit" value="Export Roster(XML)"
 						action="#{instructorActionBean.exportTestXml}" />
+				</h:panelGrid>
+				<h:panelGrid columns="2"
+					rendered="#{instructorActionBean.renderDynCourseRosterList}">
+					<h:outputText value="Course Roster" />
+					<h:outputText value="" />
+					<h:outputText value="No of Students:" />
+					<h:outputText id="CourseNoOfDRows"
+						value="#{instructorActionBean.noOfRows}" />
 				</h:panelGrid>
 				<hr />
 			</h:form>
@@ -225,38 +234,37 @@
 					</t:dataTable>
 				</div>
 			</h:form>
-		</div>
+		</div> 
 
 		<div
 			style="background-attachment: scroll; overflow: auto; height: 300px; background-repeat: repeat">
 			<h:form>
-				<t:dataTable value="#{test.mStudentDataModel}" var="row"
-					rendered="true"
-					border="1" cellspacing="0" cellpadding="1"
+				<t:dataTable value="#{instructorActionBean.mStudentDataModel}" var="row"
+					rendered="#{instructorActionBean.renderDynCourseRosterList}" border="1" cellspacing="0" cellpadding="1"
 					columnClasses="columnClass1 border" headerClass="headerClass"
 					footerClass="footerClass" rowClasses="rowClass2"
 					styleClass="dataTableEx" width="600"
-					sortColumn="#{test.sortColumn}" 
-					sortAscending="#{test.ascending}"
+					sortColumn="#{instructorActionBean.sortColumn}" sortAscending="#{instructorActionBean.ascending}"
 					preserveDataModel="true" preserveSort="true" sortable="true">
 
-					<t:columns value="#{test.mColumns}" var="column" sortable="true">
+					<t:columns value="#{instructorActionBean.mColumns}" var="column" sortable="true">
 						<f:facet name="header">
 							<h:outputText value="#{column}" />
 						</f:facet>
-						<h:outputText value="#{test.columnValue}" />
+						<h:outputText value="#{instructorActionBean.columnValue}" />
 					</t:columns>
 				</t:dataTable>
 			</h:form>
 		</div>
 		<h:form>
-		<div style="background-attachment: scroll; overflow:auto;
-                    		height:300px; background-repeat: repeat" align="center">
+			<div
+				style="background-attachment: scroll; overflow: auto; height: 300px; background-repeat: repeat"
+				align="center">
 				<h:graphicImage value="#{instructorActionBean.chartPath}"
 					height="450" width="600" rendered="true" alt="test" />
-			
+
 			</div>
-			</h:form>
+		</h:form>
 	</f:view>
 </body>
 </html>

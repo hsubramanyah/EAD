@@ -6,11 +6,15 @@ import java.io.File;
 import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
+import javax.faces.model.DataModel;
+import javax.faces.model.ListDataModel;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jfree.chart.ChartFactory;
@@ -37,11 +41,52 @@ public class InstructorActionBean {
 	private List<Question> questionList;
 	private boolean renderCourseRosterList = false;
 	private boolean renderTestQuestionList = false;
+	private boolean renderDynCourseRosterList = false;
 	private StringBuffer sb;
 	private String courseCSV;
 	private String testCSV;
 	private int noOfRows = 0;
 	private String chartPath;
+	private DataModel<String> mStudentDataModel;
+	private DataModel<String> mColumns;
+	private HashMap<String, String> hm = new HashMap<String, String>();
+
+	public boolean isRenderDynCourseRosterList() {
+		return renderDynCourseRosterList;
+	}
+
+	public void setRenderDynCourseRosterList(boolean renderDynCourseRosterList) {
+		this.renderDynCourseRosterList = renderDynCourseRosterList;
+	}
+
+	public DataModel<String> getmStudentDataModel() {
+		return mStudentDataModel;
+	}
+
+	public void setmStudentDataModel(DataModel<String> mStudentDataModel) {
+		this.mStudentDataModel = mStudentDataModel;
+	}
+
+	public DataModel<String> getmColumns() {
+		return mColumns;
+	}
+
+	public void setmColumns(DataModel<String> mColumns) {
+		this.mColumns = mColumns;
+	}
+
+	public Object getColumnValue() {
+		Object row = mStudentDataModel.getRowData();
+		System.out.println("row " + row);
+		Object column = mColumns.getRowData();
+		System.out.println("col " + column);
+		String key = Integer.toString(mStudentDataModel.getRowIndex()) + "," + Integer.toString(mColumns.getRowIndex());
+		if (mColumns.getRowIndex() > 5) {
+			return Double.parseDouble(hm.get(key));
+
+		}
+		return hm.get(key);
+	}
 
 	public String getChartPath() {
 		return chartPath;
@@ -216,10 +261,11 @@ public class InstructorActionBean {
 			messageBean.resetAll();
 			renderTestQuestionList = false;
 			renderCourseRosterList = false;
+			renderDynCourseRosterList = false;
 			sb = new StringBuffer(
 					"Last_Name,First_Name,Username,Student_ID,Last_Access,Availability,Total,Exam01,Exam02,Exam03,Project \n");
 			listTest();
-			String sqlQuery = "select last_name, first_name, 	user_name, s.uin ,last_logintime "
+			String sqlQuery = "select last_name, first_name, 	user_name, s.uin ,last_access "
 					+ "from f16g321_student_enroll sc join f16g321_student s on s.uin = sc.uin where sc.code ='"
 					+ courseSelected + "';";
 
@@ -236,7 +282,7 @@ public class InstructorActionBean {
 						courseRoster.setFirstName(rs.getString("first_name"));
 						courseRoster.setUserName(rs.getString("user_name"));
 						courseRoster.setUin(rs.getString("uin"));
-						courseRoster.setLastAccess(rs.getString("last_logintime"));
+						courseRoster.setLastAccess(rs.getString("last_access"));
 						courseRoster.setAvailability("Yes");
 						courseRosterList.add(courseRoster);
 					}
@@ -259,8 +305,8 @@ public class InstructorActionBean {
 
 						sqlQuery = "select score from f16g321_scores where test_id = 'Project' and uin ="
 								+ temp.getUin();
-						temp.setProject(
-								Double.parseDouble(dBAccessBean.executequeryList(sqlQuery).toString().replace("[", "").replace("]", "")));
+						temp.setProject(Double.parseDouble(
+								dBAccessBean.executequeryList(sqlQuery).toString().replace("[", "").replace("]", "")));
 						double total = temp.getExam01() + temp.getExam02() + temp.getExam03() + temp.getProject();
 						temp.setTotal(total);
 						sb.append(temp.toString());
@@ -290,6 +336,7 @@ public class InstructorActionBean {
 			sb = new StringBuffer("Question Type,Question Text,Correct Answer,Tolerance\n");
 			renderCourseRosterList = false;
 			renderTestQuestionList = false;
+			renderDynCourseRosterList = false;
 			if (null != testSelected && !"".equals(testSelected)) {
 				String sqlQuery = "select question_type, question_text,correct_ans, tolerance from f16g321_questions where test_id ='"
 						+ testSelected + "';";
@@ -412,26 +459,87 @@ public class InstructorActionBean {
 			return "FAIL";
 		}
 	}
-	
+
+	public String displayDynamicCourseRoster() {
+		try {
+			messageBean.resetAll();
+			renderTestQuestionList = false;
+			renderCourseRosterList = false;
+			if (null != courseSelected && !"".equals(courseSelected)) {
+				
+				String sqlQuery = "select uin from f16g321_student_enroll where code ='" + courseSelected + "';";
+
+				mStudentDataModel = new ListDataModel<String>(dBAccessBean.executequeryList(sqlQuery));
+				noOfRows=dBAccessBean.getNumOfRows();
+				List<String> colList = new ArrayList<>(Arrays.asList("Last_Name", "First_Name", "User_Name", "UIN",
+						"Last_Access", "Availability", "Total"));
+				sqlQuery = "select test_id from f16g321_test where code ='" + courseSelected + "';";
+				colList.addAll(dBAccessBean.executequeryList(sqlQuery));
+				mColumns = new ListDataModel<String>(colList);
+
+				for (int i = 0; i < mStudentDataModel.getRowCount(); i++) {
+					for (int j = 0; j < mColumns.getRowCount(); j++) {
+						mStudentDataModel.setRowIndex(i);
+						mColumns.setRowIndex(j);
+						Object row = mStudentDataModel.getRowData();
+						Object column = mColumns.getRowData();
+						String key = Integer.toString(i) + "," + Integer.toString(j);
+						if (j < 5) {
+							sqlQuery = "Select " + column + " from f16g321_student where uin = " + row + ";";
+						} else if (j > 6) {
+							sqlQuery = "Select score from f16g321_scores where uin = " + row + " and code ='"
+									+ courseSelected + "' and test_id ='" + column + "';";
+						} else if (j == 6) {
+							sqlQuery = "Select total from f16g321_student_enroll where uin = " + row + " and code ='"
+									+ courseSelected + "';";
+						} else if (j == 5) {
+							sqlQuery = "select 'Yes' from dual;";
+						}
+						if (dBAccessBean.execute(sqlQuery).equals("SUCCESS")) {
+							System.out.println("88");
+							rs = dBAccessBean.getResultSet();
+							if (rs != null && rs.next()) {
+
+								hm.put(key, rs.getString(1));
+
+							}
+						}
+					}
+				}
+			}else {
+				messageBean.setErrorMessage("Please select Course Name from the list");
+				messageBean.setRenderErrorMessage(true);
+				renderDynCourseRosterList = false;
+				return "FAIL";
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "FAIL";
+		}
+		renderDynCourseRosterList = true;
+		return "SUCCESS";
+	}
+
 	public String createPieChart() {
 		// create a dataset...
-		try{
+		try {
 			context = FacesContext.getCurrentInstance();
-		DefaultPieDataset data = new DefaultPieDataset();
-		data.setValue("One", new Double(43.2));
-		data.setValue("Two", new Double(10.0));
-		data.setValue("Three", new Double(27.5));
-		data.setValue("Four", new Double(17.5));
-		data.setValue("Five", new Double(11.0));
-		data.setValue("Six", new Double(19.4));
-		JFreeChart chart = ChartFactory.createPieChart("Pie Chart", data, true, true, false);
-		String path = context.getExternalContext().getRealPath("/ChartImages");
-		File outChart = new File(path+"/barGraph.png");
-		System.out.println(path);
-		ChartUtilities.saveChartAsPNG(outChart, chart, 600, 450);
-		System.out.println("outChart"+outChart.getAbsolutePath()); 
-		chartPath = "/ChartImages/barGraph.png";
-		}catch(Exception e){
+			DefaultPieDataset data = new DefaultPieDataset();
+			data.setValue("One", new Double(43.2));
+			data.setValue("Two", new Double(10.0));
+			data.setValue("Three", new Double(27.5));
+			data.setValue("Four", new Double(17.5));
+			data.setValue("Five", new Double(11.0));
+			data.setValue("Six", new Double(19.4));
+			JFreeChart chart = ChartFactory.createPieChart("Pie Chart", data, true, true, false);
+			String path = context.getExternalContext().getRealPath("/ChartImages");
+			File outChart = new File(path + "/barGraph.png");
+			System.out.println(path);
+			ChartUtilities.saveChartAsPNG(outChart, chart, 600, 450);
+			System.out.println("outChart" + outChart.getAbsolutePath());
+			chartPath = "/ChartImages/barGraph.png";
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "SUCCESS";
