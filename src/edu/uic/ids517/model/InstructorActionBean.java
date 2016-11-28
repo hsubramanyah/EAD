@@ -466,11 +466,11 @@ public class InstructorActionBean {
 			renderTestQuestionList = false;
 			renderCourseRosterList = false;
 			if (null != courseSelected && !"".equals(courseSelected)) {
-				
+
 				String sqlQuery = "select uin from f16g321_student_enroll where code ='" + courseSelected + "';";
 
 				mStudentDataModel = new ListDataModel<String>(dBAccessBean.executequeryList(sqlQuery));
-				noOfRows=dBAccessBean.getNumOfRows();
+				noOfRows = dBAccessBean.getNumOfRows();
 				List<String> colList = new ArrayList<>(Arrays.asList("Last_Name", "First_Name", "User_Name", "UIN",
 						"Last_Access", "Availability", "Total"));
 				sqlQuery = "select test_id from f16g321_test where code ='" + courseSelected + "';";
@@ -506,7 +506,7 @@ public class InstructorActionBean {
 						}
 					}
 				}
-			}else {
+			} else {
 				messageBean.setErrorMessage("Please select Course Name from the list");
 				messageBean.setRenderErrorMessage(true);
 				renderDynCourseRosterList = false;
@@ -543,6 +543,12 @@ public class InstructorActionBean {
 			e.printStackTrace();
 		}
 		return "SUCCESS";
+	}
+
+	public String toGraph() {
+		
+		messageBean.resetAll();
+		return "GRAPH";
 	}
 
 }

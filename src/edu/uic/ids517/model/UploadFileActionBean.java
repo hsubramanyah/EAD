@@ -337,7 +337,11 @@ System.out.println(values);
 
 			uploadCourse = true;
 
-		} catch (Exception e) {
+		} catch(NumberFormatException n){
+			messageBean.setErrorMessage("Data Issue at row     "+values+ ".    File upload failed" + n);
+			
+		}
+		catch (Exception e) {
 			messageBean.setErrorMessage("Couldnt parse the file. File upload failed" + e);
 			e.printStackTrace();
 		}

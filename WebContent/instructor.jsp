@@ -22,8 +22,10 @@
 					action="#{dBAccessActionBean.back}" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Upload Roster / Test"
 					action="#{dBAccessActionBean.next}" /> &nbsp;&nbsp;&nbsp;
+				<h:commandButton type="submit" value="Graphical Analysis"
+					action="#{instructorActionBean.toGraph}" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
-					action="#{dBAccessActionBean.logout}" />
+					action="#{dBAccessActionBean.logout}" /> 
 
 
 			</h:form>
@@ -234,20 +236,24 @@
 					</t:dataTable>
 				</div>
 			</h:form>
-		</div> 
+		</div>
 
 		<div
 			style="background-attachment: scroll; overflow: auto; height: 300px; background-repeat: repeat">
 			<h:form>
-				<t:dataTable value="#{instructorActionBean.mStudentDataModel}" var="row"
-					rendered="#{instructorActionBean.renderDynCourseRosterList}" border="1" cellspacing="0" cellpadding="1"
+				<t:dataTable value="#{instructorActionBean.mStudentDataModel}"
+					var="row"
+					rendered="#{instructorActionBean.renderDynCourseRosterList}"
+					border="1" cellspacing="0" cellpadding="1"
 					columnClasses="columnClass1 border" headerClass="headerClass"
 					footerClass="footerClass" rowClasses="rowClass2"
 					styleClass="dataTableEx" width="600"
-					sortColumn="#{instructorActionBean.sortColumn}" sortAscending="#{instructorActionBean.ascending}"
+					sortColumn="#{instructorActionBean.sortColumn}"
+					sortAscending="#{instructorActionBean.ascending}"
 					preserveDataModel="true" preserveSort="true" sortable="true">
 
-					<t:columns value="#{instructorActionBean.mColumns}" var="column" sortable="true">
+					<t:columns value="#{instructorActionBean.mColumns}" var="column"
+						sortable="true">
 						<f:facet name="header">
 							<h:outputText value="#{column}" />
 						</f:facet>

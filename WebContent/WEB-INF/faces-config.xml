@@ -133,6 +133,11 @@
 		<managed-bean-class>edu.uic.ids517.model.InstructorActionBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>graphicalAnalysis</managed-bean-name>
+		<managed-bean-class>edu.uic.ids517.model.GraphicalAnalysis</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 	<navigation-rule>
 		<from-view-id>/test.jsp</from-view-id>
 		<navigation-case>
@@ -162,6 +167,29 @@
 		<navigation-case>
 			<from-outcome>NEXT</from-outcome>
 			<to-view-id>/dataImport.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>BACK</from-outcome>
+			<to-view-id>/selectRole.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>GRAPH</from-outcome>
+			<to-view-id>/graphicalAnalysis.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/graphicalAnalysis.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>LOGOUT</from-outcome>
+			<to-view-id>/logout.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>NEXT</from-outcome>
+			<to-view-id>/instructor.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>BACK</from-outcome>
+			<to-view-id>/selectRole.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 </faces-config>
