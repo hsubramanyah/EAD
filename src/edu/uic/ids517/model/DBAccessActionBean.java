@@ -106,10 +106,10 @@ public class DBAccessActionBean {
 				"create table f16g321_test (test_id VARCHAR(20) , code VARCHAR(20) , start_time datetime, end_time datetime, duration time, points_per_ques double, total double, CONSTRAINT Pk_testid primary key (test_id,code)); ");
 
 		createHashMap.put("f16g321_questions",
-				"create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text text, correct_ans text, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); ");
+				"create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text double, correct_ans double, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); ");
 
 		createHashMap.put("f16g321_feedback",
-				"create table f16g321_feedback (uin Numeric(10) , question_id MEDIUMINT , ans_selected VARCHAR(20) , CONSTRAINT Pk_feed primary key (question_id,uin), CONSTRAINT Fk_qid foreign key (question_id ) REFERENCES f16g321_questions(question_id), CONSTRAINT Fk_uin3 foreign key (uin ) REFERENCES f16g321_student(uin)); ");
+				"create table f16g321_feedback (uin Numeric(10) , question_id MEDIUMINT , ans_selected double , CONSTRAINT Pk_feed primary key (question_id,uin), CONSTRAINT Fk_qid foreign key (question_id ) REFERENCES f16g321_questions(question_id), CONSTRAINT Fk_uin3 foreign key (uin ) REFERENCES f16g321_student(uin)); ");
 
 		createHashMap.put("f16g321_scores",
 				"create table f16g321_scores (uin Numeric(10), test_id VARCHAR(20), score Numeric(10), code VARCHAR(20) , CONSTRAINT Pk_score primary key (uin,test_id), CONSTRAINT Fk_tid1 foreign key (test_id ) REFERENCES f16g321_test(test_id), CONSTRAINT Fk_uin1 foreign key (uin ) REFERENCES f16g321_student(uin),CONSTRAINT Fk_code4 foreign key (code) REFERENCES  f16g321_course(code)); ");

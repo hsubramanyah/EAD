@@ -349,9 +349,8 @@ public class GraphicalAnalysis {
 									+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreXSelected
 									+ "' order by uin;";
 
-							
 						}
-						
+
 						if (dBAccessBean.execute(sqlIndQuery).equals("SUCCESS")) {
 							rs = dBAccessBean.getResultSet();
 							valuesY = new ArrayList<Double>(dBAccessBean.getNumOfRows());
@@ -421,8 +420,11 @@ public class GraphicalAnalysis {
 				temp[i] = values.get(i);
 			}
 			histDataset.addSeries("Histogram", temp, 15, 0, total);
-		} else if (graphTypeSelected.equals("X-Y Series")) {
-			xYSeries = new XYSeries("");
+		} else if (graphTypeSelected.equals("X-Y Series_" + scoreXSelected + "_" + scoreYSelected)) {
+			xYSeries = new XYSeries("X-Y Series_" + scoreXSelected + "_" + scoreYSelected);
+			for (int i = 0; i < values.size(); i++) {
+				xYSeries.add(values.get(i), valuesY.get(i));
+			}
 		}
 	}
 
