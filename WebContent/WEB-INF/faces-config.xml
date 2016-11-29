@@ -5,7 +5,7 @@
 	version="2.2">
 
 
-	
+
 	<managed-bean>
 		<managed-bean-name>dBAccessInfoBean</managed-bean-name>
 		<managed-bean-class>edu.uic.ids517.model.DBAccessInfoBean</managed-bean-class>
@@ -52,6 +52,12 @@
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>studentLoginBean</managed-bean-name>
+		<managed-bean-class>edu.uic.ids517.model.StudentLogin</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
 		<managed-bean-name>instructorActionBean</managed-bean-name>
 		<managed-bean-class>edu.uic.ids517.model.InstructorActionBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
@@ -61,6 +67,17 @@
 		<managed-bean-class>edu.uic.ids517.model.GraphicalAnalysis</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	<navigation-rule>
+		<from-view-id>/studentLogin.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>Success</from-outcome>
+			<to-view-id>/student.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>Fail</from-outcome>
+			<to-view-id>/studentLogin.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/dataImport.jsp</from-view-id>
 		<navigation-case>
@@ -75,6 +92,24 @@
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/student.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>Test</from-outcome>
+			<to-view-id>/test.jsp</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>Feedback</from-outcome>
+			<to-view-id>/feedback.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/student.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>LOGOUT</from-outcome>
+			<to-view-id>/logout.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/studentLogin.jsp</from-view-id>
 		<navigation-case>
 			<from-outcome>LOGOUT</from-outcome>
 			<to-view-id>/logout.jsp</to-view-id>
@@ -124,7 +159,7 @@
 			<to-view-id>/dBAccess.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-	
+
 	<navigation-rule>
 		<from-view-id>/databaseLogin.jsp</from-view-id>
 		<navigation-case>
@@ -135,7 +170,7 @@
 			<from-outcome>Failure</from-outcome>
 			<to-view-id>/databaseLogin.jsp</to-view-id>
 		</navigation-case>
-		<navigation-case> 
+		<navigation-case>
 			<from-outcome>BACK</from-outcome>
 			<to-view-id>/index.jsp</to-view-id>
 		</navigation-case>
@@ -145,7 +180,7 @@
 		<navigation-case>
 			<from-outcome>Success</from-outcome>
 
-			<to-view-id>/feedback.jsp</to-view-id>
+			<to-view-id>/score.jsp</to-view-id>
 			<redirect></redirect>
 		</navigation-case>
 		<navigation-case>
@@ -192,6 +227,14 @@
 		<navigation-case>
 			<from-outcome>BACK</from-outcome>
 			<to-view-id>/selectRole.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/score.jsp</from-view-id>
+
+		<navigation-case>
+			<from-outcome>LOGOUT</from-outcome>
+			<to-view-id>/logout.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 </faces-config>

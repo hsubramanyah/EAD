@@ -25,7 +25,7 @@
 		<hr>
 		<h3>Select the below roles:</h3>
 		<h:form>
-			<h:commandButton type="submit" value="Student" action="student">
+			<h:commandButton type="submit" value="Student" action="studentLogin">
 			</h:commandButton>
 		</h:form>
 		<br />

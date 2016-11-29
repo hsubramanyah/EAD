@@ -16,6 +16,7 @@ public class ActionStudentBean {
 	private List<String> courses;
 	private List<String> tests;
 
+	private List<String> availableTests;
 	private boolean renderCourseList;
 	private boolean renderTestList;
 
@@ -23,6 +24,7 @@ public class ActionStudentBean {
 	private FacesContext context;
 	private Result result;
 
+private StudentLogin studentLoginBean;
 	public ActionStudentBean() {
 		setCourses(new ArrayList<String>());
 
@@ -35,7 +37,10 @@ public class ActionStudentBean {
 		System.out.println(context);
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dbaseBean = (DBAccessBean) m.get("dBAccessBean");
-		String query = "select distinct c.code from f16g321_course c join f16g321_student_enroll s on c.crn=s.crn";
+		studentLoginBean = (StudentLogin) m.get("studentLoginBean");
+		
+
+		String query = "select distinct se.code from f16g321_student_enroll se join f16g321_student s on s.uin=se.uin where s.user_name='"+studentLoginBean.getUserName()+"';";
 		if(dbaseBean!=null)
 		courses = dbaseBean.executequeryList(query);
 		// System.out.println(courses.toString());
@@ -46,7 +51,7 @@ public class ActionStudentBean {
 	}
 
 	public void listTests() {
-		String query = "select t.test_id from f16g321_test t join f16g321_course c on c.crn=t.crn where c.code='"
+		String query = "select t.test_id from f16g321_test t join f16g321_course c on c.code=t.code where c.code='"
 				+ course + "';";
 		tests = dbaseBean.executequeryList(query);
 		// System.out.println(tests.toString());
@@ -55,6 +60,18 @@ public class ActionStudentBean {
 		// renderTestList);
 	}
 
+public String takeTest(){
+	java.sql.Timestamp sqlDate = new java.sql.Timestamp(System.currentTimeMillis());
+	String query = "select t.test_id from f16g321_test t join f16g321_course c on c.code=t.code where c.code='"
+			+ course + "' and t.end_time > '"+sqlDate +"';";
+	availableTests=dbaseBean.executequeryList(query);
+	
+	if(availableTests.contains(test)){
+		return "Test";
+	}
+	else
+	return "Feedback";
+}
 	public Result getResult() {
 		return result;
 	}

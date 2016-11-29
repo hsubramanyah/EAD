@@ -39,7 +39,7 @@
 					rendered="#{messageBean.renderErrorMessage}" />
 				<h:outputText value="#{messageBean.successMessage}"
 					style="color:green" rendered="#{messageBean.renderSuccessMessage}" />
-				<h:panelGrid columns="6">
+				<h:panelGrid columns="5">
 					<h:commandButton type="submit" value="List Courses"
 						action="#{instructorActionBean.listCourse}" />
 					<h:commandButton type="submit" value="List Tests"
@@ -48,10 +48,9 @@
 						action="#{instructorActionBean.displayCourseRoster}" />
 					<h:commandButton type="submit" value="Display Test Questions"
 						action="#{instructorActionBean.displayTestQuestions}" />
-					<h:commandButton type="submit" value="test"
-						action="#{instructorActionBean.displayDynamicCourseRoster}" />
-					<h:commandButton type="submit" value="Display Test chart"
-						action="#{instructorActionBean.createPieChart}" />
+					<h:commandButton type="submit" value="Transaction Log"
+						action="#{instructorActionBean.transactionLog}" />
+				
 
 
 				</h:panelGrid>

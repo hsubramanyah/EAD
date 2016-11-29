@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class InstructorActionBean {
 	private FacesContext context;
 	private MessageBean messageBean;
 	private List<String> courseList;
-	private String courseSelected;
+	private String courseSelected = "";
 	private boolean courseListRendered = false;
 	private List<String> testList;
 	private String testSelected;
@@ -444,7 +445,7 @@ public class InstructorActionBean {
 				e.close();
 				output.close();
 
-			} else if (fileName.indexOf(".csv") != -1) {
+			} else {
 				output.write(classString.getBytes());
 				output.flush();
 				output.close();
@@ -521,28 +522,38 @@ public class InstructorActionBean {
 		return "SUCCESS";
 	}
 
-	public String createPieChart() {
-		// create a dataset...
-		try {
-			context = FacesContext.getCurrentInstance();
-			DefaultPieDataset data = new DefaultPieDataset();
-			data.setValue("One", new Double(43.2));
-			data.setValue("Two", new Double(10.0));
-			data.setValue("Three", new Double(27.5));
-			data.setValue("Four", new Double(17.5));
-			data.setValue("Five", new Double(11.0));
-			data.setValue("Six", new Double(19.4));
-			JFreeChart chart = ChartFactory.createPieChart("Pie Chart", data, true, true, false);
-			String path = context.getExternalContext().getRealPath("/ChartImages");
-			File outChart = new File(path + "/barGraph.png");
-			System.out.println(path);
-			ChartUtilities.saveChartAsPNG(outChart, chart, 600, 450);
-			System.out.println("outChart" + outChart.getAbsolutePath());
-			chartPath = "/ChartImages/barGraph.png";
-		} catch (Exception e) {
-			e.printStackTrace();
+	public String transactionLog() {
+		System.out.println("*******************"+courseSelected);
+		if(courseSelected.isEmpty()){
+			messageBean.setErrorMessage("Please select Course Name from the list");
+			messageBean.setRenderErrorMessage(true);
+			return "FAIL";
+		} else{
+		String query = "select s.user_name,s.last_access,s.end_time,s.last_login_ip from f16g321_student s join f16g321_student_enroll se on se.uin=s.uin where se.code='"+courseSelected+"';";
+		try{
+		dBAccessBean.execute(query);
+		ResultSet rs = dBAccessBean.getResultSet();
+		StringBuffer sb = new StringBuffer("User Name \t Last Access \t End Time \t Login Ip");
+		sb.append(System.getProperty("line.separator"));
+		if (rs != null) {
+			while (rs.next()) {
+				
+				sb.append(rs.getString(1)).append("\t");
+				sb.append(rs.getString(2)).append("\t");
+				sb.append(rs.getString(3)).append("\t");
+				sb.append(rs.getString(4)).append("\t");
+				sb.append(System.getProperty("line.separator"));
+			}
+			List temp = new ArrayList() ;
+			downloadFile(temp, courseSelected + "_Student_Transaction.txt", "text/tab-separated-values",
+					sb.toString());
 		}
-		return "SUCCESS";
+		}catch(SQLException e){
+			
+		}
+		}
+		
+		return "Fail";
 	}
 
 	public String toGraph() {

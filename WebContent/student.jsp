@@ -20,7 +20,7 @@
 				<h:commandButton type="submit" value="Change Role"
 					action="selectRole" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
-					action="#{dBAccessActionBean.logout}" />&nbsp;&nbsp;&nbsp;
+					action="#{dBAccessActionBean.studentLogout}" />&nbsp;&nbsp;&nbsp;
 		</h:form>
 			<br /> <br />
 		</div>
@@ -29,7 +29,7 @@
 			<h:panelGrid columns="2">
 				<h:commandButton type="submit" value="View Tests"
 					action="#{actionStudentBean.listTests}" />
-				<h:commandButton type="submit" value="Take Test" action="test" />
+				<h:commandButton type="submit" value="Take Test" action="#{actionStudentBean.takeTest}" />
 			</h:panelGrid>
 
 

@@ -19,6 +19,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
+import org.jfree.data.xy.XYSeries;
 
 public class GraphicalAnalysis {
 
@@ -58,6 +59,7 @@ public class GraphicalAnalysis {
 	private DefaultPieDataset pieDataset = new DefaultPieDataset();
 	private DefaultCategoryDataset catDataset = new DefaultCategoryDataset();
 	private HistogramDataset histDataset = new HistogramDataset();
+	private XYSeries xYSeries;
 	double total;
 	List<Double> values;
 	List<Double> valuesY;
@@ -361,6 +363,7 @@ public class GraphicalAnalysis {
 								}
 							}
 						}
+						generateDataset();
 						break;
 					}
 				}
@@ -419,7 +422,7 @@ public class GraphicalAnalysis {
 			}
 			histDataset.addSeries("Histogram", temp, 15, 0, total);
 		} else if (graphTypeSelected.equals("X-Y Series")) {
-
+			xYSeries = new XYSeries("");
 		}
 	}
 
