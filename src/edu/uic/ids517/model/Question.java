@@ -8,9 +8,9 @@ public class Question implements Serializable {
 	private int questionId;
 	private String questionType;
 	private String questionString;
-	private String answer;
+	private double answer;
 	private double answerError;
-	private String studentAnswer;
+	private double studentAnswer;
 	private String courseName;
 
 	public String getQuestionType() {
@@ -37,19 +37,19 @@ public class Question implements Serializable {
 		this.questionString = questionString;
 	}
 
-	public String getStudentAnswer() {
+	public double getStudentAnswer() {
 		return studentAnswer;
 	}
 
-	public void setStudentAnswer(String studentAnswer) {
+	public void setStudentAnswer(double studentAnswer) {
 		this.studentAnswer = studentAnswer;
 	}
 
-	public String getAnswer() {
+	public double getAnswer() {
 		return answer;
 	}
 
-	public void setAnswer(String answer) {
+	public void setAnswer(double answer) {
 		this.answer = answer;
 	}
 

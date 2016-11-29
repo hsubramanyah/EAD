@@ -58,7 +58,7 @@ public class ActionTestBean implements Serializable {
 					Question questionRecord = new Question();
 
 					questionRecord.setQuestionString(rs.getString("question_text"));
-					questionRecord.setAnswer(rs.getString("correct_ans"));
+					questionRecord.setAnswer(rs.getDouble("correct_ans"));
 					questionRecord.setAnswerError(rs.getDouble("tolerance"));
 
 					questionLists.add(questionRecord);
@@ -84,7 +84,7 @@ public class ActionTestBean implements Serializable {
 		// System.out.println(studentAnswer.toString());
 		int count = 0;
 		for (Question q : questionLists) {
-			if (q.getAnswer().equals(q.getStudentAnswer()))
+			if (q.getAnswer() == q.getStudentAnswer())
 				count++;
 		}
 		score=count;

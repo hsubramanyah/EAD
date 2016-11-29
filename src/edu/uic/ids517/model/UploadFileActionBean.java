@@ -277,8 +277,8 @@ System.out.println(values);
 				if (i == 0) {
 					i++;
 					for (int a = 7; a < input.length; a++) {
-						testQuery = "Insert into f16g321_test(test_id,code) values ('" + inputHeader[a] + "','" + code
-								+ "');";
+						testQuery = "Insert into f16g321_test(test_id,code,total,end_time) values ('" + inputHeader[a] + "','" + code
+								+ "', 250,'1999-12-12');";
 						dBAccessBean.execute(testQuery);
 					}
 					continue;

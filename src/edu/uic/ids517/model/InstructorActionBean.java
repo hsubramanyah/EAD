@@ -350,7 +350,7 @@ public class InstructorActionBean {
 							question = new Question();
 							question.setQuestionType(rs.getString("question_type"));
 							question.setQuestionString(rs.getString("question_text"));
-							question.setAnswer(rs.getString("correct_ans"));
+							question.setAnswer(rs.getDouble("correct_ans"));
 							question.setAnswerError(Double.parseDouble(rs.getString("tolerance")));
 							questionList.add(question);
 							sb.append(question.toString());

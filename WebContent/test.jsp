@@ -21,7 +21,7 @@
 				<h:commandButton type="submit" value="Change Role"
 					action="selectRole" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
-					action="#{dBAccessActionBean.logout}" />&nbsp;&nbsp;&nbsp;
+					action="#{dBAccessActionBean.studentLogout}" />&nbsp;&nbsp;&nbsp;
 		</h:form>
 			<br /> <br />
 		</div>

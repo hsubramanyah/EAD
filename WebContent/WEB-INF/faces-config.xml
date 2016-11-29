@@ -179,9 +179,12 @@
 		<from-view-id>/test.jsp</from-view-id>
 		<navigation-case>
 			<from-outcome>Success</from-outcome>
-
 			<to-view-id>/score.jsp</to-view-id>
 			<redirect></redirect>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>LOGOUT</from-outcome>
+			<to-view-id>/logout.jsp</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>Failure</from-outcome>
