@@ -32,19 +32,39 @@ public class GraphicalAnalysis {
 	private String graphTypeSelected;
 	private String perdictorData;
 	private String responseData;
-	private boolean renderScoreList = false;
-	private String scoreSelected;
+	private boolean renderXScoreList = false;
+	private boolean renderYScoreList = false;
+
+	public boolean isRenderYScoreList() {
+		return renderYScoreList;
+	}
+
+	public void setRenderYScoreList(boolean renderYScoreList) {
+		this.renderYScoreList = renderYScoreList;
+	}
+
+	private String scoreXSelected;
+	private String scoreYSelected;
+
+	public String getScoreYSelected() {
+		return scoreYSelected;
+	}
+
+	public void setScoreYSelected(String scoreYSelected) {
+		this.scoreYSelected = scoreYSelected;
+	}
+
 	private ResultSet rs;
 	private DefaultPieDataset pieDataset = new DefaultPieDataset();
 	private DefaultCategoryDataset catDataset = new DefaultCategoryDataset();
 	private HistogramDataset histDataset = new HistogramDataset();
 	double total;
 	List<Double> values;
+	List<Double> valuesY;
 	private boolean renderPieChart = false;
 	private boolean renderBarChart = false;
 	private boolean renderHistChart = false;
 	private String histchartPath;
-	
 
 	public boolean isRenderHistChart() {
 		return renderHistChart;
@@ -78,12 +98,12 @@ public class GraphicalAnalysis {
 		this.renderBarChart = renderBarChart;
 	}
 
-	public String getScoreSelected() {
-		return scoreSelected;
+	public String getScoreXSelected() {
+		return scoreXSelected;
 	}
 
-	public void setScoreSelected(String scoreSelected) {
-		this.scoreSelected = scoreSelected;
+	public void setScoreXSelected(String scoreXSelected) {
+		this.scoreXSelected = scoreXSelected;
 	}
 
 	public List<String> getScoreList() {
@@ -94,12 +114,12 @@ public class GraphicalAnalysis {
 		ScoreList = scoreList;
 	}
 
-	public boolean isRenderScoreList() {
-		return renderScoreList;
+	public boolean isrenderXScoreList() {
+		return renderXScoreList;
 	}
 
-	public void setRenderScoreList(boolean renderScoreList) {
-		this.renderScoreList = renderScoreList;
+	public void setrenderXScoreList(boolean renderXScoreList) {
+		this.renderXScoreList = renderXScoreList;
 	}
 
 	private boolean renderGraphList = false;
@@ -178,9 +198,10 @@ public class GraphicalAnalysis {
 		renderBarChart = false;
 	}
 
-	public String listCourseDataforAnalysis() {
+	public String listScoresDataforAnalysis() {
 		messageBean.resetAll();
-		renderScoreList = false;
+		renderXScoreList = false;
+		renderYScoreList = false;
 		if (instructorActionBean.getCourseSelected().isEmpty()) {
 			messageBean.setErrorMessage("Please select Course Name from the list");
 			messageBean.setRenderErrorMessage(true);
@@ -189,7 +210,9 @@ public class GraphicalAnalysis {
 			if (instructorActionBean.listTest().equals("SUCCESS")) {
 				ScoreList = instructorActionBean.getTestList();
 				ScoreList.add("Total");
-				renderScoreList = true;
+				renderXScoreList = true;
+				renderYScoreList = true;
+				renderGraphList = true;
 				return "SUCCESS";
 			}
 			return "FAIL";
@@ -205,8 +228,9 @@ public class GraphicalAnalysis {
 			renderGraphList = false;
 			return "FAIL";
 
-		} else if (scoreSelected.isEmpty()) {
-			messageBean.setErrorMessage("Please List available Scores and select Score Name from the list");
+		} else if (scoreXSelected.isEmpty()) {
+			messageBean.setErrorMessage(
+					"Please List available Scores and select Score Name from 'X / Independent(Predictor) Values'");
 			messageBean.setRenderErrorMessage(true);
 			renderGraphList = false;
 			return "FAIL";
@@ -221,7 +245,17 @@ public class GraphicalAnalysis {
 		renderFalse();
 		context = FacesContext.getCurrentInstance();
 		JFreeChart chart;
-		if (listGraphs().equals("FAIL")) {
+		if (instructorActionBean.getCourseSelected().isEmpty()) {
+
+			messageBean.setErrorMessage("Please select Course Name from the list");
+			messageBean.setRenderErrorMessage(true);
+			renderGraphList = false;
+			return "FAIL";
+
+		} else if (scoreXSelected.isEmpty()) {
+			messageBean.setErrorMessage("Please List available Scores and select Score Name from 'X Values'");
+			messageBean.setRenderErrorMessage(true);
+			renderGraphList = false;
 			return "FAIL";
 		} else if (graphTypeSelected.isEmpty()) {
 			messageBean.setErrorMessage("Please select Graph Type from the list");
@@ -233,7 +267,7 @@ public class GraphicalAnalysis {
 			File outChart;
 			long date = new Date().getTime();
 			String sqlIndQuery, SqlTotalQuery;
-			if (scoreSelected.equalsIgnoreCase("Total")) {
+			if (scoreXSelected.equalsIgnoreCase("Total")) {
 				sqlIndQuery = "select sum(score) from f16g321_scores where  code ='"
 						+ instructorActionBean.getCourseSelected() + "' group by uin order by uin;";
 
@@ -241,11 +275,11 @@ public class GraphicalAnalysis {
 						+ instructorActionBean.getCourseSelected() + "'";
 			} else {
 				sqlIndQuery = "Select score from f16g321_scores where  code ='"
-						+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreSelected
+						+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreXSelected
 						+ "' order by uin;";
 
 				SqlTotalQuery = "select total from f16g321_test where code = '"
-						+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreSelected + "';";
+						+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreXSelected + "';";
 			}
 			if (dBAccessBean.execute(SqlTotalQuery).equals("SUCCESS")) {
 				rs = dBAccessBean.getResultSet();
@@ -268,8 +302,8 @@ public class GraphicalAnalysis {
 					switch (graphTypeSelected) {
 					case ("Pie Chart"):
 
-						generateDataset("pie");
-						chart = ChartFactory.createPieChart(scoreSelected + "_Pie Chart", pieDataset, true, true,
+						generateDataset();
+						chart = ChartFactory.createPieChart(scoreXSelected + "_Pie Chart", pieDataset, true, true,
 								false);
 
 						outChart = new File(path + "/" + date + "_PieGraph.png");
@@ -279,8 +313,8 @@ public class GraphicalAnalysis {
 						renderPieChart = true;
 						break;
 					case ("Bar Graph"):
-						generateDataset("bar");
-						chart = ChartFactory.createBarChart(scoreSelected + "_Bar Chart", "Category", "Value",
+						generateDataset();
+						chart = ChartFactory.createBarChart(scoreXSelected + "_Bar Chart", "Category", "Value",
 								catDataset, PlotOrientation.VERTICAL, true, true, false);
 						outChart = new File(path + "/" + date + "_BarGraph.png");
 						renderBarChart = true;
@@ -288,13 +322,45 @@ public class GraphicalAnalysis {
 						barchartPath = "/ChartImages/" + date + "_BarGraph.png";
 						break;
 					case ("Histogram"):
-						generateDataset("hist");
+						generateDataset();
 						outChart = new File(path + "/" + date + "_HistGraph.png");
 						chart = ChartFactory.createHistogram("Histogram", "Marks range", "Students Count.", histDataset,
 								PlotOrientation.VERTICAL, true, true, false);
 						ChartUtilities.saveChartAsPNG(outChart, chart, 600, 450);
 						histchartPath = "/ChartImages/" + date + "_HistGraph.png";
 						renderHistChart = true;
+						break;
+					case ("X-Y Series"):
+						if (scoreYSelected.isEmpty()) {
+							messageBean.setErrorMessage(
+									"Please List available Scores and select Score Name from 'Y Values'");
+							messageBean.setRenderErrorMessage(true);
+							renderGraphList = false;
+							return "FAIL";
+						}
+						if (scoreYSelected.equalsIgnoreCase("Total")) {
+							sqlIndQuery = "select sum(score) from f16g321_scores where  code ='"
+									+ instructorActionBean.getCourseSelected() + "' group by uin order by uin;";
+
+						} else {
+							sqlIndQuery = "Select score from f16g321_scores where  code ='"
+									+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreXSelected
+									+ "' order by uin;";
+
+							
+						}
+						
+						if (dBAccessBean.execute(sqlIndQuery).equals("SUCCESS")) {
+							rs = dBAccessBean.getResultSet();
+							valuesY = new ArrayList<Double>(dBAccessBean.getNumOfRows());
+							if (rs != null) {
+								while (rs.next()) {
+
+									valuesY.add(rs.getDouble(1));
+
+								}
+							}
+						}
 						break;
 					}
 				}
@@ -306,7 +372,7 @@ public class GraphicalAnalysis {
 
 	}
 
-	public void generateDataset(String chartType) {
+	public void generateDataset() {
 		double a = total * 0.9;
 		double b = total * 0.8;
 		double c = total * 0.7;
@@ -330,21 +396,21 @@ public class GraphicalAnalysis {
 				countE++;
 			}
 		}
-		if (chartType.equals("pie")) {
+		if (graphTypeSelected.equals("Pie Chart")) {
 			pieDataset.clear();
 			pieDataset.setValue("A Grade", countA);
 			pieDataset.setValue("B Grade", countB);
 			pieDataset.setValue("C Grade", countC);
 			pieDataset.setValue("D Grade", countD);
 			pieDataset.setValue("E Grade", countD);
-		} else if (chartType.equals("bar")) {
+		} else if (graphTypeSelected.equals("Bar Graph")) {
 			catDataset.clear();
 			catDataset.addValue(countA, "A Grade", "Category 1");
 			catDataset.addValue(countB, "B Grade", "Category 2");
 			catDataset.addValue(countC, "C Grade", "Category 3");
 			catDataset.addValue(countD, "D Grade", "Category 4");
 			catDataset.addValue(countE, "E Grade", "Category 5");
-		} else if (chartType.equals("hist")) {
+		} else if (graphTypeSelected.equals("Histogram")) {
 			double[] temp = new double[values.size()];
 			histDataset = new HistogramDataset();
 			histDataset.setType(HistogramType.FREQUENCY);
@@ -352,6 +418,8 @@ public class GraphicalAnalysis {
 				temp[i] = values.get(i);
 			}
 			histDataset.addSeries("Histogram", temp, 15, 0, total);
+		} else if (graphTypeSelected.equals("X-Y Series")) {
+
 		}
 	}
 
