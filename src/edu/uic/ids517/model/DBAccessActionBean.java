@@ -21,6 +21,7 @@ public class DBAccessActionBean {
 	private List<String> columnNames;
 	private List<String> tableViewList;
 	private List<String> columnNamesSelected;
+	private String username="";
 	private List<String> allTableList = new ArrayList<String>(Arrays.asList("f16g321_user", "f16g321_course",
 			"f16g321_student", "f16g321_instructor", "f16g321_ins_course", "f16g321_student_enroll", "f16g321_test",
 			"f16g321_questions", "f16g321_feedback", "f16g321_scores"));
@@ -81,6 +82,15 @@ public class DBAccessActionBean {
 		studentLoginBean = (StudentLogin) m.get("studentLoginBean");
 		listTables();
 
+	}
+
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String listTables() {
@@ -353,12 +363,11 @@ public class DBAccessActionBean {
 	}
 
 	public String studentLogout() {
-		studentLoginBean.getUserName();
-
+		
 		java.sql.Timestamp sqlDate = new java.sql.Timestamp(System.currentTimeMillis());
 
 		String logoutQuery = "update f16g321_student s set s.end_time='" + sqlDate
-				+ "' where s.uin >0 and s.user_name='" + studentLoginBean.getUserName() + "';";
+				+ "' where s.uin >0 and s.user_name='" + username + "';";
 
 		dBAccessBean.execute(logoutQuery);
 		dBAccessBean.close();

@@ -12,6 +12,7 @@ public class StudentLogin {
 	private FacesContext context;
 	private DBAccessBean dbaseBean;
 	private MessageBean messageBean;
+	private DBAccessActionBean dBAccessActionBean;
 	private Boolean errorMessage = false;
 
 	@PostConstruct
@@ -20,6 +21,10 @@ public class StudentLogin {
 		System.out.println(context);
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dbaseBean = (DBAccessBean) m.get("dBAccessBean");
+		dBAccessActionBean = (DBAccessActionBean) m.get("dBAccessActionBean");
+		if (dBAccessActionBean == null){
+			dBAccessActionBean = new DBAccessActionBean();
+		}
 		messageBean = (MessageBean) m.get("messageBean");
 
 	}
@@ -89,6 +94,7 @@ public class StudentLogin {
 				if (result.getInt(1) == 1) {
 
 					getIp();
+					dBAccessActionBean.setUsername(userName);
 					return "Success";
 				} else {
 					messageBean.setErrorMessage("Incorrect UserName. Login Failed");
