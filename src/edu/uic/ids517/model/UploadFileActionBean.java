@@ -40,10 +40,6 @@ public class UploadFileActionBean {
 	private int crn;
 	private String code;
 	private String description;
-	/*
-	 * private int uin; private String last_name; private String first_name;
-	 * private String user_name;
-	 */
 
 	private String startDate;
 	private String endDate;
@@ -52,32 +48,24 @@ public class UploadFileActionBean {
 	private String duration;
 	private Double pointsPerQues;
 
-	// private List<String> inputList = new ArrayList<String>();
-
 	@PostConstruct
 	public void init() {
 		context = FacesContext.getCurrentInstance();
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dBAccessBean = (DBAccessBean) m.get("dBAccessBean");
-		// messageBean = (MessageBean) m.get("messageBean");
+		messageBean = (MessageBean) m.get("messageBean");
 		contextPath = context.getExternalContext().getRealPath("/");
 	}
 
 	public String processFileUpload() {
+		messageBean.resetAll();
 		List<String> inputList = new ArrayList<String>();
 		String status = "SUCCESS";
 		uploadedFileContents = null;
-		// messageBean.setErrorMessage("Error");
-		// test println only
-		// System.out.println("context path: " + contextPath);
 		String path = contextPath + "temp";
-		// System.out.println("path: " + path);
 		File tempFile = null;
 		FileOutputStream fos = null;
 		int n = 0;
-		// System.out.println("Message Bean =" + messageBean);
-		// System.err.println(messageBean.getErrorMessage());
-		// messageBean.setErrorMessage("");
 		fileImport = false;
 		fileImportError = true;
 		try {
@@ -85,13 +73,9 @@ public class UploadFileActionBean {
 			fileName = fileName.substring((fileName.lastIndexOf("\\") + 1), fileName.length());
 			fileSize = uploadedFile.getSize();
 			fileContentType = uploadedFile.getContentType();
-			// next line if want upload in String for memory processing
-			// uploadedFileContents = new String(uploadedFile.getBytes());
 			tempFile = new File(path + "/" + fileName);
 
 			fos = new FileOutputStream(tempFile);
-
-			// next line if want file uploaded to disk
 
 			fos.write(uploadedFile.getBytes());
 
@@ -102,9 +86,6 @@ public class UploadFileActionBean {
 			s = new Scanner(tempFile);
 
 			String input;
-			// String[] values;
-
-			// input = s.nextLine();
 			while (s.hasNext()) {
 				input = s.nextLine();
 				inputList.add(input);
@@ -162,10 +143,8 @@ public class UploadFileActionBean {
 						+ testId + "'," + code + ",'" + startDate + "','" + endDate + "','" + duration + "',"
 						+ pointsPerQues + "," + numberRows * pointsPerQues + ")";
 			}
-			System.out.println(query);
 			dBAccessBean.execute(query);
 			for (String val : values) {
-				System.out.println(values);
 				input = val.split(separator);
 				String question_type = input[0];
 				String question_text = input[1];
@@ -179,7 +158,7 @@ public class UploadFileActionBean {
 
 				TestRoster t = new TestRoster(question_type, question_text, correct_ans, tolerance);
 				testRoster.add(t);
-				// System.out.println("reahed");
+
 			}
 			uploadTest = true;
 
@@ -220,20 +199,9 @@ public class UploadFileActionBean {
 
 			String courseQuery = "Insert into f16g321_course(crn,code,description) values(" + crn + ",'" + code + "','"
 					+ description + "');";
-			System.out.println("223");
+
 			dBAccessBean.execute(courseQuery);
 
-			/*
-			 * String testQuery =
-			 * "Insert into f16g321_test(test_id,code) values ('Exam01','" +
-			 * code + "');"; dBAccessBean.execute(testQuery); testQuery =
-			 * "Insert into f16g321_test(test_id,code) values ('Exam02','" +
-			 * code + "');"; dBAccessBean.execute(testQuery); testQuery =
-			 * "Insert into f16g321_test(test_id,code) values ('Exam03','" +
-			 * code + "');"; dBAccessBean.execute(testQuery); testQuery =
-			 * "Insert into f16g321_test(test_id,code) values ('Project','" +
-			 * code + "');"; dBAccessBean.execute(testQuery);
-			 */
 			int i = 0;
 			for (String val : values) {
 				input = val.split(separator);
@@ -244,7 +212,7 @@ public class UploadFileActionBean {
 						testQuery = "Insert into f16g321_test(test_id,code,total,end_time) values ('" + inputHeader[a]
 								+ "','" + code + "', 250,'1999-12-12');";
 						dBAccessBean.execute(testQuery);
-						System.out.println("247");
+
 					}
 					continue;
 				}
@@ -266,7 +234,6 @@ public class UploadFileActionBean {
 				if (count == 0) {
 					studentQuery = "Insert into f16g321_student (uin,last_name,first_name,user_name) values(" + uin
 							+ ",'" + lastName + "','" + firstName + "','" + userName + "');";
-					System.out.println("262");
 					dBAccessBean.execute(studentQuery);
 				}
 				String studentScores;
@@ -277,7 +244,6 @@ public class UploadFileActionBean {
 					studentScores = "Insert into f16g321_scores values(" + uin + ",'" + inputHeader[a] + "',"
 							+ Double.parseDouble(input[a]) + ", '" + code + "');";
 					dBAccessBean.execute(studentScores);
-					System.out.println("277");
 					tempTotal = tempTotal + Double.parseDouble(input[a]);
 
 				}
@@ -285,28 +251,7 @@ public class UploadFileActionBean {
 				String studentEnroll = "Insert into f16g321_student_enroll values('" + code + "'," + uin + ","
 						+ tempTotal + ");";
 				dBAccessBean.execute(studentEnroll);
-				System.out.println("280");
-				// Double exam01 = Double.parseDouble((String) input[7]);
-				// Double exam02 = Double.parseDouble((String) input[8]);
-				// Double exam03 = Double.parseDouble((String) input[9]);
-				// Double project = Double.parseDouble((String) input[10]);
 
-				/*
-				 * studentScores = "Insert into f16g321_scores values(" + uin +
-				 * ",'Exam01'," + exam01 + code + ");";
-				 * 
-				 * dBAccessBean.execute(studentScores); studentScores =
-				 * "Insert into f16g321_scores values(" + uin + ",'Exam02'," +
-				 * exam02 + code + ");"; dBAccessBean.execute(studentScores);
-				 * studentScores = "Insert into f16g321_scores values(" + uin +
-				 * ",'Exam03'," + exam03 + code + ");";
-				 * dBAccessBean.execute(studentScores); studentScores =
-				 * "Insert into f16g321_scores values(" + uin + ",'Project'," +
-				 * project + code + ");"; dBAccessBean.execute(studentScores);
-				 * CourseRoster c = new CourseRoster(lastName, firstName,
-				 * userName, uin, lastAccess, availability, total, exam01,
-				 * exam02, exam03, project); courseRoster.add(c);
-				 */
 			}
 
 			uploadCourse = true;

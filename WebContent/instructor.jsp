@@ -261,15 +261,7 @@
 				</t:dataTable>
 			</h:form>
 		</div>
-		<h:form>
-			<div
-				style="background-attachment: scroll; overflow: auto; height: 300px; background-repeat: repeat"
-				align="center">
-				<h:graphicImage value="#{instructorActionBean.chartPath}"
-					height="450" width="600" rendered="true" alt="test" />
-
-			</div>
-		</h:form>
+		
 	</f:view>
 </body>
 </html>

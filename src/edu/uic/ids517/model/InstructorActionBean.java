@@ -54,7 +54,6 @@ public class InstructorActionBean {
 	@PostConstruct
 	public void init() {
 		context = FacesContext.getCurrentInstance();
-		System.out.println(context);
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dBAccessBean = (DBAccessBean) m.get("dBAccessBean");
 		messageBean = (MessageBean) m.get("messageBean");
@@ -124,7 +123,6 @@ public class InstructorActionBean {
 
 				rs = dBAccessBean.getResultSet();
 				noOfRows = dBAccessBean.getNumOfRows();
-				System.out.println(noOfRows);
 				courseRosterList = new ArrayList<CourseRoster>(noOfRows);
 				if (rs != null) {
 					while (rs.next()) {
@@ -141,23 +139,40 @@ public class InstructorActionBean {
 					for (CourseRoster temp : courseRosterList) {
 						sqlQuery = "select score from f16g321_scores where test_id = 'Exam01' and uin ="
 								+ temp.getUin();
-						temp.setExam01(Double.parseDouble(
-								dBAccessBean.executequeryList(sqlQuery).toString().replace("[", "").replace("]", "")));
+						dBAccessBean.execute(sqlQuery);
+						rs = dBAccessBean.getResultSet();
+						double score =0;
+						if (rs != null && rs.next()) {
+							score = rs.getDouble(1);
+						}
+						temp.setExam01(score);
 
 						sqlQuery = "select score from f16g321_scores where test_id = 'Exam02' and uin ="
 								+ temp.getUin();
-						temp.setExam02(Double.parseDouble(
-								dBAccessBean.executequeryList(sqlQuery).toString().replace("[", "").replace("]", "")));
+						dBAccessBean.execute(sqlQuery);
+						rs = dBAccessBean.getResultSet();
+						if (rs != null && rs.next()) {
+							score = rs.getDouble(1);
+						}
+						temp.setExam02(score);
 
 						sqlQuery = "select score from f16g321_scores where test_id = 'Exam03' and uin ="
 								+ temp.getUin();
-						temp.setExam03(Double.parseDouble(
-								dBAccessBean.executequeryList(sqlQuery).toString().replace("[", "").replace("]", "")));
+						dBAccessBean.execute(sqlQuery);
+						rs = dBAccessBean.getResultSet();
+						if (rs != null && rs.next()) {
+							score = rs.getDouble(1);
+						}
+						temp.setExam03(score);
 
 						sqlQuery = "select score from f16g321_scores where test_id = 'Project' and uin ="
 								+ temp.getUin();
-						temp.setProject(Double.parseDouble(
-								dBAccessBean.executequeryList(sqlQuery).toString().replace("[", "").replace("]", "")));
+						dBAccessBean.execute(sqlQuery);
+						rs = dBAccessBean.getResultSet();
+						if (rs != null && rs.next()) {
+							score = rs.getDouble(1);
+						}
+						temp.setProject(score);
 						double total = temp.getExam01() + temp.getExam02() + temp.getExam03() + temp.getProject();
 						temp.setTotal(total);
 						sb.append(temp.toString());
@@ -347,7 +362,6 @@ public class InstructorActionBean {
 							sqlQuery = "select 'Yes' from dual;";
 						}
 						if (dBAccessBean.execute(sqlQuery).equals("SUCCESS")) {
-							System.out.println("88");
 							rs = dBAccessBean.getResultSet();
 							if (rs != null && rs.next()) {
 
@@ -373,7 +387,6 @@ public class InstructorActionBean {
 	}
 
 	public String transactionLog() {
-		System.out.println("*******************" + courseSelected);
 		if (courseSelected.isEmpty()) {
 			messageBean.setErrorMessage("Please select Course Name from the list");
 			messageBean.setRenderErrorMessage(true);
@@ -414,9 +427,7 @@ public class InstructorActionBean {
 	}
 	public Object getColumnValue() {
 		Object row = mStudentDataModel.getRowData();
-		System.out.println("row " + row);
 		Object column = mColumns.getRowData();
-		System.out.println("col " + column);
 		String key = Integer.toString(mStudentDataModel.getRowIndex()) + "," + Integer.toString(mColumns.getRowIndex());
 		if (mColumns.getRowIndex() > 5) {
 			return Double.parseDouble(hm.get(key));

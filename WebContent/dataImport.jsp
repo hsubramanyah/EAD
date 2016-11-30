@@ -72,13 +72,13 @@ border-right-style: solid">
 				<h:outputLabel value="Test ID:" />
 				<h:inputText id="testId" value="#{uploadFileActionBean.testId}"
 					size="30" />
-				<h:outputLabel value="Start Date:" />
+				<h:outputLabel value="Start Date(YYYY-MM-DD):" />
 				<h:inputText id="startDate"
 					value="#{uploadFileActionBean.startDate}" size="30" />
-				<h:outputLabel value="End Date:" />
+				<h:outputLabel value="End Date(YYYY-MM-DD):" />
 				<h:inputText id="endDate" value="#{uploadFileActionBean.endDate}"
 					size="30" />
-				<h:outputLabel value="Duration:" />
+				<h:outputLabel value="Duration(HH:MM:SS):" />
 				<h:inputText id="duration" value="#{uploadFileActionBean.duration}"
 					size="30" />
 				<h:outputLabel value="Points per Question:" />
@@ -94,9 +94,7 @@ border-right-style: solid">
 			<h:outputText rendered="#{uploadFileActionBean.fileImportError }"
 				value="#{messageBean.errorMessage }" />
 			<br />
-			<h:outputLabel rendered="#{uploadFileActionBean.uploadTest }"
-				value="File uploaded: " />
-			<hr />
+			
 			
 		
 

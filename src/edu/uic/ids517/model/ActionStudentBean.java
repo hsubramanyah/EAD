@@ -54,7 +54,6 @@ public class ActionStudentBean {
 	@PostConstruct
 	public void init() {
 		context = FacesContext.getCurrentInstance();
-		System.out.println(context);
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dbaseBean = (DBAccessBean) m.get("dBAccessBean");
 		studentLoginBean = (StudentLogin) m.get("studentLoginBean");

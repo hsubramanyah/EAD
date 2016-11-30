@@ -62,7 +62,7 @@ public class DBAccessActionBean {
 				"create table f16g321_test (test_id VARCHAR(20) , code VARCHAR(20) , start_time datetime, end_time datetime, duration time, points_per_ques double, total double, CONSTRAINT Pk_testid primary key (test_id,code)); ");
 
 		createHashMap.put("f16g321_questions",
-				"create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text double, correct_ans double, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); ");
+				"create table f16g321_questions ( question_id MEDIUMINT NOT NULL AUTO_INCREMENT, test_id VARCHAR(20), question_type VARCHAR(20), question_text VARCHAR(100), correct_ans double, tolerance double, CONSTRAINT Pk_qid primary key (question_id), CONSTRAINT Fk_tid foreign key (test_id ) REFERENCES f16g321_test(test_id)); ");
 
 		createHashMap.put("f16g321_feedback",
 				"create table f16g321_feedback (uin Numeric(10) , question_id MEDIUMINT , ans_selected double , CONSTRAINT Pk_feed primary key (question_id,uin), CONSTRAINT Fk_qid foreign key (question_id ) REFERENCES f16g321_questions(question_id), CONSTRAINT Fk_uin3 foreign key (uin ) REFERENCES f16g321_student(uin)); ");
@@ -75,7 +75,6 @@ public class DBAccessActionBean {
 	@PostConstruct
 	public void init() {
 		context = FacesContext.getCurrentInstance();
-		System.out.println(context);
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dBAccessBean = (DBAccessBean) m.get("dBAccessBean");
 		messageBean = (MessageBean) m.get("messageBean");
@@ -222,7 +221,6 @@ public class DBAccessActionBean {
 		try {
 			dBAccessBean.execute("set foreign_key_checks=0");
 			for (String temp : createHashMap.keySet()) {
-				System.out.println(temp);
 				dBAccessBean.getConnection().setAutoCommit(false);
 				if (dBAccessBean.tableList().contains(temp)) {
 					continue;

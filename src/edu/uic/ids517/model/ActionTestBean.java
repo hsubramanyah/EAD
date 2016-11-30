@@ -29,48 +29,44 @@ public class ActionTestBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		System.out.println(context);
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dbaseBean = (DBAccessBean) m.get("dBAccessBean");
-		// messageBean = (MessageBean) m.get("messageBean");
 		studentBean = (ActionStudentBean) m.get("actionStudentBean");
 		studentLoginBean = (StudentLogin) m.get("studentLoginBean");
 		question = (Question) m.get("question");
 		test = studentBean.getTest();
-if (!studentBean.isTestScore())
-		loadQuestion();
+		if (!studentBean.isTestScore())
+			loadQuestion();
 	}
 
 	public void loadQuestion() {
 		String query = "select * from f16g321_questions q where q.test_id='" + test + "'";
-		if(dbaseBean!=null){
-		dbaseBean.execute(query);
+		if (dbaseBean != null) {
+			dbaseBean.execute(query);
 
-		setRenderQuestionList(true);
-		rs = dbaseBean.getResultSet();
-	
+			setRenderQuestionList(true);
+			rs = dbaseBean.getResultSet();
 
-		if (rs == null) {
-			// message bean
-		} else {
-			try {
-				while (rs.next()) {
-					Question questionRecord = new Question();
+			if (rs == null) {
+				
+			} else {
+				try {
+					while (rs.next()) {
+						Question questionRecord = new Question();
 
-					questionRecord.setQuestionString(rs.getString("question_text"));
-					questionRecord.setAnswer(rs.getDouble("correct_ans"));
-					questionRecord.setAnswerError(rs.getDouble("tolerance"));
+						questionRecord.setQuestionString(rs.getString("question_text"));
+						questionRecord.setAnswer(rs.getDouble("correct_ans"));
+						questionRecord.setAnswerError(rs.getDouble("tolerance"));
 
-					questionLists.add(questionRecord);
+						questionLists.add(questionRecord);
 
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
-		}
 
-		
 	}
 
 	public ActionTestBean() {
@@ -80,89 +76,97 @@ if (!studentBean.isTestScore())
 	}
 
 	public String processTest() {
-		// System.out.println(studentAnswer.toString());
 		int count = 0;
 		try {
-			String studentUser= "select s.uin from f16g321_student s where s.user_name='"+studentLoginBean.getUserName()+"';";
-			//System.out.println(studentUser);
+			String studentUser = "select s.uin from f16g321_student s where s.user_name='"
+					+ studentLoginBean.getUserName() + "';";
 			dbaseBean.execute(studentUser);
 			rs = dbaseBean.getResultSet();
-			String uin="";
+			String uin = "";
 			if (rs != null && rs.next()) {
-				uin=rs.getString(1);
+				uin = rs.getString(1);
 			}
-			
-			String questionId = "select q.question_id from f16g321_questions q where q.test_id='"+test+"' ;";
+
+			String questionId = "select q.question_id from f16g321_questions q where q.test_id='" + test + "' ;";
 			dbaseBean.execute(questionId);
 			rs = dbaseBean.getResultSet();
-			List<Integer> qId = new ArrayList<>(); 
-			while(rs.next()){
+			List<Integer> qId = new ArrayList<>();
+			while (rs.next()) {
 				qId.add(rs.getInt(1));
 			}
+
 			
-			//System.out.println("question id "+qId.toString());
-			
-			
-			String updateAns="select  count(*) from f16g321_feedback f join f16g321_questions q on q.question_id=f.question_id join f16g321_student s on s.uin=f.uin where q.test_id='"+test+"' and s.uin="+uin+";";
+			String updateAns = "select  count(*) from f16g321_feedback f join f16g321_questions q on q.question_id=f.question_id join f16g321_student s on s.uin=f.uin where q.test_id='"
+					+ test + "' and s.uin=" + uin + ";";
 			dbaseBean.execute(updateAns);
 			rs = dbaseBean.getResultSet();
-			int exists=0;
+			int exists = 0;
 			if (rs != null && rs.next()) {
 				exists = rs.getInt(1);
 			}
-			
-			int qi=0;
-			String feedback="";
+
+			int qi = 0;
+			String feedback = "";
 			for (Question q : questionLists) {
-			if ((q.getAnswer() - q.getAnswerError() <= q.getStudentAnswer())
-					&& (q.getAnswer() + q.getAnswerError() >= q.getStudentAnswer()))
-				count++;
-			if(exists==0){
-				feedback="Insert into f16g321_feedback values("+uin+","+qId.get(qi)+","+q.getStudentAnswer()+");";
-			}else{
-				feedback="update f16g321_feedback f set f.ans_selected="+q.getStudentAnswer()+" where f.uin="+uin+" and f.question_id="+qId.get(qi)+";";	
+				if ((q.getAnswer() - q.getAnswerError() <= q.getStudentAnswer())
+						&& (q.getAnswer() + q.getAnswerError() >= q.getStudentAnswer()))
+					count++;
+				if (exists == 0) {
+					feedback = "Insert into f16g321_feedback values(" + uin + "," + qId.get(qi) + ","
+							+ q.getStudentAnswer() + ");";
+				} else {
+					feedback = "update f16g321_feedback f set f.ans_selected=" + q.getStudentAnswer() + " where f.uin="
+							+ uin + " and f.question_id=" + qId.get(qi) + ";";
+				}
+				dbaseBean.execute(feedback);
+
+				
+				qi++;
+
 			}
-			dbaseBean.execute(feedback);
+			qi = 0;
+			score = count;
 			
-			//System.out.println(feedback);
-			qi++;
-			
-		}
-			qi=0;
-		score = count;
-		// System.out.println(count);
-		// update score in db
-		
-			
-			String testPoints = "select t.points_per_ques from f16g321_test t where t.test_id='"+test+"' and t.code="+studentBean.getCourse()+"; ";
+			String testPoints = "select t.points_per_ques from f16g321_test t where t.test_id='" + test
+					+ "' and t.code=" + studentBean.getCourse() + "; ";
 			dbaseBean.execute(testPoints);
-			int points=0;
+			int points = 0;
 			ResultSet rs = dbaseBean.getResultSet();
 			if (rs != null && rs.next()) {
-				 points = rs.getInt(1);
+				points = rs.getInt(1);
 			}
-			score*=points;
+			score *= points;
 			String scoreQuery = "select count(*) from f16g321_scores sc join f16g321_student s on s.uin =sc.uin where sc.test_id='"
 					+ test + "' and s.user_name='" + studentLoginBean.getUserName() + "';";
-			//System.out.println(scoreQuery);
 			dbaseBean.execute(scoreQuery);
-			 rs = dbaseBean.getResultSet();
+			rs = dbaseBean.getResultSet();
 
 			if (rs != null && rs.next()) {
 				count = rs.getInt(1);
 			}
-			
-			
-			if (count > 0) {
-				scoreQuery="update f16g321_scores sc set sc.score="+score+" where sc.uin="+uin+" and sc.code="+studentBean.getCourse()+" and sc.test_id='"+test+"';";
-			} else {
-				scoreQuery="insert into f16g321_scores values("+uin+",'"+test+"',"+score+","+studentBean.getCourse()+");";
-				}
-			dbaseBean.execute(scoreQuery);
-			//System.out.println(scoreQuery);
-			return "Success";
-		} catch (SQLException e) {
 
+			if (count > 0) {
+				scoreQuery = "update f16g321_scores sc set sc.score=" + score + " where sc.uin=" + uin + " and sc.code="
+						+ studentBean.getCourse() + " and sc.test_id='" + test + "';";
+			} else {
+				scoreQuery = "insert into f16g321_scores values(" + uin + ",'" + test + "'," + score + ","
+						+ studentBean.getCourse() + ");";
+			}
+			dbaseBean.execute(scoreQuery);
+			
+			String totalScore = "select sum(score) from f16g321_scores where code = '"+studentBean.getCourse()+"' and uin ="+uin+";";
+			dbaseBean.execute(totalScore);
+			rs = dbaseBean.getResultSet();
+			double total;
+			if (rs != null && rs.next()) {
+				total = rs.getDouble(1);
+				totalScore = "update f16g321_student_enroll set total = "+total+" where code = '"+studentBean.getCourse()+"' and uin ="+uin+";";
+				dbaseBean.execute(totalScore);
+			}
+		
+		
+		} catch (SQLException e) {
+			return "FAIL";
 		}
 		return "Success";
 	}
@@ -238,5 +242,5 @@ if (!studentBean.isTestScore())
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
-	
+
 }

@@ -17,7 +17,7 @@
 				<h3 align="center">f16g321 Test</h3>
 				<hr />
 				<br />
-				<h:commandButton type="submit" value="Home" action="index" /> &nbsp;&nbsp;&nbsp;
+				<h:commandButton type="submit" value="Student Home Page" action="student" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Change Role"
 					action="selectRole" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
