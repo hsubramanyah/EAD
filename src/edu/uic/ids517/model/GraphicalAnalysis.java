@@ -11,6 +11,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -20,6 +23,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.data.statistics.HistogramType;
 import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 public class GraphicalAnalysis {
 
@@ -28,13 +32,103 @@ public class GraphicalAnalysis {
 	private MessageBean messageBean;
 	private InstructorActionBean instructorActionBean;
 	private List<String> listGraph = new ArrayList<String>(
-			Arrays.asList("Pie Chart", "Bar Graph", "Histogram", "Regression", "X-Y Series"));
+			Arrays.asList("Pie Chart", "Bar Graph", "Histogram", "X-Y Series"));
 	private List<String> ScoreList;
-	private String graphTypeSelected;
+	private String graphTypeSelected = "";
 	private String perdictorData;
 	private String responseData;
 	private boolean renderXScoreList = false;
 	private boolean renderYScoreList = false;
+	private boolean renderNumAnalysis = false;
+	private double[] xArrayValues;
+	private double[] yArrayValues;
+	private double intercept;					
+	private double slope;
+	private double rSqr;
+	private double interceptStdError;
+	private double slopeStdError;
+	private double rSignificance ;
+	private String rEquation;
+
+	public String getrEquation() {
+		return rEquation;
+	}
+
+	public double getIntercept() {
+		return round(intercept);
+	}
+
+	public double getSlope() {
+		return round(slope);
+	}
+
+	public double getrSqr() {
+		return round(rSqr);
+	}
+
+	public double getInterceptStdError() {
+		return round(interceptStdError);
+	}
+
+	public double getSlopeStdError() {
+		return round(slopeStdError);
+	}
+
+	public double getrSignificance() {
+		return round(rSignificance);
+	}
+
+	public boolean isRenderNumAnalysis() {
+		return renderNumAnalysis;
+	}
+
+	double minValue;
+
+	public double getMinValue() {
+		return round(minValue);
+	}
+
+	public double getMaxValue() {
+		return round(maxValue);
+	}
+
+	public double getMean() {
+		return round(mean);
+	}
+
+	public double getVariance() {
+		return round(variance);
+	}
+
+	public double getStd() {
+		return round(std);
+	}
+
+	public double getMedian() {
+		return round(median);
+	}
+
+	public double getQ1() {
+		return round(q1);
+	}
+
+	public double getQ3() {
+		return round(q3);
+	}
+
+	public double getIqr() {
+		return round(iqr);
+	}
+
+	double maxValue;
+	double mean;
+	double variance;
+	double std;
+	double median;
+	double q1;
+	double q3;
+	double iqr;
+	double range;
 
 	public boolean isRenderYScoreList() {
 		return renderYScoreList;
@@ -44,8 +138,8 @@ public class GraphicalAnalysis {
 		this.renderYScoreList = renderYScoreList;
 	}
 
-	private String scoreXSelected;
-	private String scoreYSelected;
+	private String scoreXSelected ="";
+	private String scoreYSelected ="";
 
 	public String getScoreYSelected() {
 		return scoreYSelected;
@@ -58,14 +152,39 @@ public class GraphicalAnalysis {
 	private ResultSet rs;
 	private DefaultPieDataset pieDataset = new DefaultPieDataset();
 	private DefaultCategoryDataset catDataset = new DefaultCategoryDataset();
-	private HistogramDataset histDataset = new HistogramDataset();
+	private HistogramDataset histDataset;
 	private XYSeries xYSeries;
+	private XYSeriesCollection xYSeriesCollection;
 	double total;
 	List<Double> values;
 	List<Double> valuesY;
 	private boolean renderPieChart = false;
 	private boolean renderBarChart = false;
 	private boolean renderHistChart = false;
+	private boolean renderXYChart = false;
+	private String xYchartPath;
+	private boolean renderRegAnalysis = false;
+
+	public boolean isRenderRegAnalysis() {
+		return renderRegAnalysis;
+	}
+
+	public boolean isRenderXYChart() {
+		return renderXYChart;
+	}
+
+	public void setRenderXYChart(boolean renderXYChart) {
+		this.renderXYChart = renderXYChart;
+	}
+
+	public String getxYchartPath() {
+		return xYchartPath;
+	}
+
+	public void setxYchartPath(String xYchartPath) {
+		this.xYchartPath = xYchartPath;
+	}
+
 	private String histchartPath;
 
 	public boolean isRenderHistChart() {
@@ -198,6 +317,10 @@ public class GraphicalAnalysis {
 	public void renderFalse() {
 		renderPieChart = false;
 		renderBarChart = false;
+		renderHistChart = false;
+		renderXYChart = false;
+		renderNumAnalysis = false;
+		renderRegAnalysis = false;
 	}
 
 	public String listScoresDataforAnalysis() {
@@ -346,7 +469,7 @@ public class GraphicalAnalysis {
 
 						} else {
 							sqlIndQuery = "Select score from f16g321_scores where  code ='"
-									+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreXSelected
+									+ instructorActionBean.getCourseSelected() + "' and test_id ='" + scoreYSelected
 									+ "' order by uin;";
 
 						}
@@ -360,9 +483,16 @@ public class GraphicalAnalysis {
 									valuesY.add(rs.getDouble(1));
 
 								}
+								generateDataset();
+								outChart = new File(path + "/" + date + "_X-YSeriesGraph.png");
+								chart = ChartFactory.createXYLineChart("X-Y Seires", scoreXSelected, scoreYSelected,
+										xYSeriesCollection, PlotOrientation.VERTICAL, true, true, false);
+								ChartUtilities.saveChartAsPNG(outChart, chart, 600, 450);
+								xYchartPath = "/ChartImages/" + date + "_X-YSeriesGraph.png";
+								renderXYChart = true;
 							}
 						}
-						generateDataset();
+
 						break;
 					}
 				}
@@ -420,12 +550,143 @@ public class GraphicalAnalysis {
 				temp[i] = values.get(i);
 			}
 			histDataset.addSeries("Histogram", temp, 15, 0, total);
-		} else if (graphTypeSelected.equals("X-Y Series_" + scoreXSelected + "_" + scoreYSelected)) {
+		} else if (graphTypeSelected.equals("X-Y Series")) {
 			xYSeries = new XYSeries("X-Y Series_" + scoreXSelected + "_" + scoreYSelected);
 			for (int i = 0; i < values.size(); i++) {
 				xYSeries.add(values.get(i), valuesY.get(i));
 			}
+			xYSeriesCollection = new XYSeriesCollection();
+			xYSeriesCollection.addSeries(xYSeries);
 		}
+	}
+
+	public String numericalAnalysis() {
+		messageBean.resetAll();
+		renderFalse();
+		if (instructorActionBean.getCourseSelected().isEmpty()) {
+
+			messageBean.setErrorMessage("Please select Course Name from the list");
+			messageBean.setRenderErrorMessage(true);
+			renderGraphList = false;
+			return "FAIL";
+
+		} else if (scoreXSelected.isEmpty()) {
+			messageBean.setErrorMessage("Please List available Scores and select Score Name from 'X Values'");
+			messageBean.setRenderErrorMessage(true);
+			renderGraphList = false;
+			return "FAIL";
+		}
+		try {
+			String sqlQuery;
+
+			if (scoreXSelected.equalsIgnoreCase("Total")) {
+				sqlQuery = "select sum(score) from f16g321_scores where  code ='"
+						+ instructorActionBean.getCourseSelected() + "' group by uin order by uin;";
+
+			} else {
+				sqlQuery = "Select score from f16g321_scores where  code ='" + instructorActionBean.getCourseSelected()
+						+ "' and test_id ='" + scoreXSelected + "' order by uin;";
+
+			}
+
+			if (dBAccessBean.execute(sqlQuery).equals("SUCCESS")) {
+				rs = dBAccessBean.getResultSet();
+				xArrayValues = new double[dBAccessBean.getNumOfRows()];
+				if (rs != null) {
+					int i = 0;
+					while (rs.next()) {
+
+						xArrayValues[i] = (rs.getDouble(1));
+						i++;
+
+					}
+					minValue = StatUtils.min(xArrayValues);
+					maxValue = StatUtils.max(xArrayValues);
+					mean = StatUtils.mean(xArrayValues);
+					variance = StatUtils.variance(xArrayValues, mean);
+					std = Math.sqrt(variance);
+					median = StatUtils.percentile(xArrayValues, 50.0);
+					q1 = StatUtils.percentile(xArrayValues, 25.0);
+					q3 = StatUtils.percentile(xArrayValues, 75.0);
+					iqr = q3 - q1;
+					range = maxValue - minValue;
+					renderNumAnalysis = true;
+				} else {
+					return "FAIL";
+				}
+			}
+		} catch (Exception e) {
+			return "FAIL";
+		}
+		return "SUCCESS";
+	}
+
+	public String regressionAnalysis() {
+		messageBean.resetAll();
+		renderFalse();
+		if (numericalAnalysis().equals("FAIL")) {
+			return "FAIL";
+		}
+		if (scoreYSelected.isEmpty()) {
+			messageBean.setErrorMessage("Please List available Scores and select Score Name from 'Y Values'");
+			messageBean.setRenderErrorMessage(true);
+			return "FAIL";
+		}
+		String sqlQuery;
+		if (scoreYSelected.equalsIgnoreCase("Total")) {
+			sqlQuery = "select sum(score) from f16g321_scores where  code ='" + instructorActionBean.getCourseSelected()
+					+ "' group by uin order by uin;";
+
+		} else {
+			sqlQuery = "Select score from f16g321_scores where  code ='" + instructorActionBean.getCourseSelected()
+					+ "' and test_id ='" + scoreYSelected + "' order by uin;";
+
+		}
+		try {
+			SimpleRegression sr = new SimpleRegression();
+			if (dBAccessBean.execute(sqlQuery).equals("SUCCESS")) {
+				rs = dBAccessBean.getResultSet();
+				yArrayValues = new double[dBAccessBean.getNumOfRows()];
+				if (rs != null) {
+					int i = 0;
+					while (rs.next()) {
+
+						yArrayValues[i] = (rs.getDouble(1));
+						sr.addData(xArrayValues[i], yArrayValues[i]);
+						i++;
+					}
+					intercept = sr.getIntercept();					
+					slope = 	sr.getSlope();
+					rSqr = sr.getRSquare();
+					interceptStdError = sr.getInterceptStdErr();
+					slopeStdError=  sr.getSlopeStdErr();
+					rSignificance = sr.getSignificance();
+					renderRegAnalysis = true;
+					renderNumAnalysis =false;
+					rEquation = scoreYSelected+" = "+ round(intercept) + " + " +round(slope)+" * "+scoreXSelected;
+				} else {
+					return "FAIL";
+				}
+
+			}
+		} catch (Exception e) {
+
+		}
+
+		return "SUCCESS";
+	}
+	
+	public double round(double d){
+		if (10<Math.abs(d)){
+			d= Math.round(d * 100.0) / 100.0;
+		} else {
+			d= Math.round(d * 10000.0) / 10000.0;
+		}
+		return d;
+	}
+
+	public double getRange() {
+		return range;
 	}
 
 }

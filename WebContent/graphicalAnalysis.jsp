@@ -44,15 +44,22 @@
 						action="#{graphicalAnalysis.listScoresDataforAnalysis}" />
 					<h:commandButton type="submit" value="List Graphs"
 						action="#{graphicalAnalysis.listGraphs}" />
+						<h:commandButton type="submit" value="Generate Numerical Analysis"
+						action="#{graphicalAnalysis.numericalAnalysis}" />
+						<h:commandButton type="submit" value="Generate Regression Analysis"
+						action="#{graphicalAnalysis.regressionAnalysis}" />
 					<h:commandButton type="submit" value="Generate Graph"
 						action="#{graphicalAnalysis.generateGraph}" />
 				</h:panelGrid>
 				<h:panelGrid columns="4">
 					<h:outputText value="Course List       " />
-					<h:outputText value="Test/Scores List" rendered="#{graphicalAnalysis.renderXScoreList}"/>
-					<h:outputText value="" rendered="#{graphicalAnalysis.renderYScoreList}"/>
-					<h:outputText value="Graph List " rendered="#{graphicalAnalysis.renderGraphList}"/>
-					
+					<h:outputText value="Test/Scores List"
+						rendered="#{graphicalAnalysis.renderXScoreList}" />
+					<h:outputText value=""
+						rendered="#{graphicalAnalysis.renderYScoreList}" />
+					<h:outputText value="Graph List "
+						rendered="#{graphicalAnalysis.renderGraphList}" />
+
 
 					<h:selectOneListbox size="10" styleClass="selectOneListbox_mono"
 						value="#{instructorActionBean.courseSelected}"
@@ -67,7 +74,7 @@
 					</h:selectOneListbox>
 
 					<h:selectOneListbox size="10" styleClass="selectOneListbox_mono"
-						value="#{graphicalAnalysis.scoreYSelected}"  
+						value="#{graphicalAnalysis.scoreYSelected}"
 						rendered="#{graphicalAnalysis.renderYScoreList}">
 						<f:selectItems value="#{graphicalAnalysis.scoreList}" />
 					</h:selectOneListbox>
@@ -79,9 +86,12 @@
 					</h:selectOneListbox>
 
 					<h:outputText value="" />
-					<h:outputText value="X(Predictor) Values" rendered="#{graphicalAnalysis.renderXScoreList}"/>
-					<h:outputText value="Y(Response) Values" rendered="#{graphicalAnalysis.renderYScoreList}"/>
-					<h:outputText value="" rendered="#{graphicalAnalysis.renderGraphList}" />
+					<h:outputText value="X(Predictor) Values"
+						rendered="#{graphicalAnalysis.renderXScoreList}" />
+					<h:outputText value="Y(Response) Values"
+						rendered="#{graphicalAnalysis.renderYScoreList}" />
+					<h:outputText value=""
+						rendered="#{graphicalAnalysis.renderGraphList}" />
 
 				</h:panelGrid>
 				<br />
@@ -89,7 +99,54 @@
 				<br />
 			</h:form>
 		</div>
-
+		<div>
+			<h:form rendered="#{graphicalAnalysis.renderNumAnalysis}">
+				<h:panelGrid columns="2">
+					<h:outputText value="Mimimum Score:" />
+					<h:outputText value="#{graphicalAnalysis.minValue}" />
+					<h:outputText value="Maximum Score:" />
+					<h:outputText value="#{graphicalAnalysis.maxValue}" />
+					<h:outputText value="Mean:" />
+					<h:outputText value="#{graphicalAnalysis.mean}" />
+					<h:outputText value="Variance:" />
+					<h:outputText value="#{graphicalAnalysis.variance}" />
+					<h:outputText value="Standard Deviation:" />
+					<h:outputText value="#{graphicalAnalysis.std}" />
+					<h:outputText value="Median:" />
+					<h:outputText value="#{graphicalAnalysis.median}" />
+					<h:outputText value="First Quartile:" />
+					<h:outputText value="#{graphicalAnalysis.q1}" />
+					<h:outputText value="Third Quartile:" />
+					<h:outputText value="#{graphicalAnalysis.q3}" />
+					<h:outputText value="Inter Quartile Range:" />
+					<h:outputText value="#{graphicalAnalysis.iqr}" />
+					<h:outputText value="Range:" />
+					<h:outputText value="#{graphicalAnalysis.range}" />
+				</h:panelGrid>
+			</h:form>
+			
+			<h:form rendered="#{graphicalAnalysis.renderRegAnalysis}">
+				<h:panelGrid columns="3" border="1">
+					<h:outputText value="" />
+					<h:outputText value="Co-efficient" />
+					<h:outputText value="Co-efficient Standard Error" />
+					<h:outputText value="Constant" />
+					<h:outputText value="#{graphicalAnalysis.intercept}" />
+					<h:outputText value="#{graphicalAnalysis.interceptStdError}" />
+					<h:outputText value="#{graphicalAnalysis.scoreYSelected}" />
+					<h:outputText value="#{graphicalAnalysis.slope}" />
+					<h:outputText value="#{graphicalAnalysis.slopeStdError}" />
+				</h:panelGrid>
+				<br />
+				<h:panelGrid columns="2" border="1">
+				<h:outputText value="Significance:" />
+				<h:outputText value="#{graphicalAnalysis.renderNumAnalysis =false;}" />
+				<h:outputText value="Regression Equation:" />
+				<h:outputText value="#{graphicalAnalysis.rEquation}" />
+				
+				</h:panelGrid>
+			</h:form>
+		</div>
 		<h:form>
 			<div
 				style="background-attachment: scroll; overflow: auto; height: auto; background-repeat: repeat"
@@ -113,6 +170,14 @@
 				<h:graphicImage value="#{graphicalAnalysis.histchartPath}"
 					height="450" width="600"
 					rendered="#{graphicalAnalysis.renderHistChart}" alt="Histogram" />
+
+			</div>
+			<div
+				style="background-attachment: scroll; overflow: auto; height: aoto; background-repeat: repeat"
+				align="center">
+				<h:graphicImage value="#{graphicalAnalysis.xYchartPath}"
+					height="450" width="600"
+					rendered="#{graphicalAnalysis.renderXYChart}" alt="XY Series" />
 
 			</div>
 

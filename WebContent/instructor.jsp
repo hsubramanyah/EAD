@@ -22,7 +22,7 @@
 					action="#{dBAccessActionBean.back}" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Upload Roster / Test"
 					action="#{dBAccessActionBean.next}" /> &nbsp;&nbsp;&nbsp;
-				<h:commandButton type="submit" value="Graphical Analysis"
+				<h:commandButton type="submit" value="Numerical / Graphical Analysis"
 					action="#{instructorActionBean.toGraph}" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
 					action="#{dBAccessActionBean.logout}" /> 
