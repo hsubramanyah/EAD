@@ -3,9 +3,7 @@ package edu.uic.ids517.model;
 import java.io.Serializable;
 
 public class CourseRoster implements Serializable{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private String lastName;
 	private String firstName;

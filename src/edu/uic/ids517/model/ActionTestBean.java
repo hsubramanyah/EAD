@@ -16,17 +16,15 @@ public class ActionTestBean implements Serializable {
 	private Question question;
 	private boolean renderQuestionList;
 	ResultSet resultSet, rs;
-
 	private String test;
 	private ActionStudentBean studentBean;
 	private List<String> questionList;
 	private List<String> columnNames;
-
 	private int score;
-
 	private DBAccessBean dbaseBean;
 	private boolean renderQuestion;
 	private Result result;
+	private StudentLogin studentLoginBean;
 
 	@PostConstruct
 	public void init() {
@@ -36,8 +34,10 @@ public class ActionTestBean implements Serializable {
 		dbaseBean = (DBAccessBean) m.get("dBAccessBean");
 		// messageBean = (MessageBean) m.get("messageBean");
 		studentBean = (ActionStudentBean) m.get("actionStudentBean");
+		studentLoginBean = (StudentLogin) m.get("studentLoginBean");
 		question = (Question) m.get("question");
 		test = studentBean.getTest();
+if (!studentBean.isTestScore())
 		loadQuestion();
 	}
 
@@ -65,7 +65,6 @@ public class ActionTestBean implements Serializable {
 
 				}
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -83,13 +82,88 @@ public class ActionTestBean implements Serializable {
 	public String processTest() {
 		// System.out.println(studentAnswer.toString());
 		int count = 0;
-		for (Question q : questionLists) {
-			if (q.getAnswer() == q.getStudentAnswer())
+		try {
+			String studentUser= "select s.uin from f16g321_student s where s.user_name='"+studentLoginBean.getUserName()+"';";
+			//System.out.println(studentUser);
+			dbaseBean.execute(studentUser);
+			rs = dbaseBean.getResultSet();
+			String uin="";
+			if (rs != null && rs.next()) {
+				uin=rs.getString(1);
+			}
+			
+			String questionId = "select q.question_id from f16g321_questions q where q.test_id='"+test+"' ;";
+			dbaseBean.execute(questionId);
+			rs = dbaseBean.getResultSet();
+			List<Integer> qId = new ArrayList<>(); 
+			while(rs.next()){
+				qId.add(rs.getInt(1));
+			}
+			
+			//System.out.println("question id "+qId.toString());
+			
+			
+			String updateAns="select  count(*) from f16g321_feedback f join f16g321_questions q on q.question_id=f.question_id join f16g321_student s on s.uin=f.uin where q.test_id='"+test+"' and s.uin="+uin+";";
+			dbaseBean.execute(updateAns);
+			rs = dbaseBean.getResultSet();
+			int exists=0;
+			if (rs != null && rs.next()) {
+				exists = rs.getInt(1);
+			}
+			
+			int qi=0;
+			String feedback="";
+			for (Question q : questionLists) {
+			if ((q.getAnswer() - q.getAnswerError() <= q.getStudentAnswer())
+					&& (q.getAnswer() + q.getAnswerError() >= q.getStudentAnswer()))
 				count++;
+			if(exists==0){
+				feedback="Insert into f16g321_feedback values("+uin+","+qId.get(qi)+","+q.getStudentAnswer()+");";
+			}else{
+				feedback="update f16g321_feedback f set f.ans_selected="+q.getStudentAnswer()+" where f.uin="+uin+" and f.question_id="+qId.get(qi)+";";	
+			}
+			dbaseBean.execute(feedback);
+			
+			//System.out.println(feedback);
+			qi++;
+			
 		}
-		score=count;
-		//System.out.println(count);
+			qi=0;
+		score = count;
+		// System.out.println(count);
+		// update score in db
 		
+			
+			String testPoints = "select t.points_per_ques from f16g321_test t where t.test_id='"+test+"' and t.code="+studentBean.getCourse()+"; ";
+			dbaseBean.execute(testPoints);
+			int points=0;
+			ResultSet rs = dbaseBean.getResultSet();
+			if (rs != null && rs.next()) {
+				 points = rs.getInt(1);
+			}
+			score*=points;
+			String scoreQuery = "select count(*) from f16g321_scores sc join f16g321_student s on s.uin =sc.uin where sc.test_id='"
+					+ test + "' and s.user_name='" + studentLoginBean.getUserName() + "';";
+			//System.out.println(scoreQuery);
+			dbaseBean.execute(scoreQuery);
+			 rs = dbaseBean.getResultSet();
+
+			if (rs != null && rs.next()) {
+				count = rs.getInt(1);
+			}
+			
+			
+			if (count > 0) {
+				scoreQuery="update f16g321_scores sc set sc.score="+score+" where sc.uin="+uin+" and sc.code="+studentBean.getCourse()+" and sc.test_id='"+test+"';";
+			} else {
+				scoreQuery="insert into f16g321_scores values("+uin+",'"+test+"',"+score+","+studentBean.getCourse()+");";
+				}
+			dbaseBean.execute(scoreQuery);
+			//System.out.println(scoreQuery);
+			return "Success";
+		} catch (SQLException e) {
+
+		}
 		return "Success";
 	}
 

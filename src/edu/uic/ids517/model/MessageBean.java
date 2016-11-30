@@ -7,6 +7,13 @@ public class MessageBean {
 	private String successMessage;
 	private boolean renderSuccessMessage;
 
+	
+	public void resetAll(){
+		errorMessage = "";
+		renderErrorMessage = false;
+		successMessage ="";
+		renderSuccessMessage = false;
+	}
 	public boolean isRenderErrorMessage() {
 		return renderErrorMessage;
 	}
@@ -44,11 +51,6 @@ public class MessageBean {
 		this.renderSuccessMessage = renderSuccessMessage;
 	}
 	
-	public void resetAll(){
-		errorMessage = "";
-		renderErrorMessage = false;
-		successMessage ="";
-		renderSuccessMessage = false;
-	}
+	
 
 }

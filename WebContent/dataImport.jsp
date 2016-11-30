@@ -17,9 +17,10 @@
 
 		<div align="center">
 			<h:form>
-				<h:commandButton type="submit" value="Home" action="index" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Change Role"
-					action="selectRole" /> &nbsp;&nbsp;&nbsp;
+					action="#{dBAccessActionBean.back}" /> &nbsp;&nbsp;&nbsp;
+					<h:commandButton type="submit" value="Instructor Home Page"
+					action="#{dBAccessActionBean.next}" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
 					action="#{dBAccessActionBean.logout}" />&nbsp;&nbsp;&nbsp;
 		</h:form>
@@ -27,6 +28,11 @@
 		</div>
 		<hr />
 		<br />
+		<h:outputText value="#{messageBean.errorMessage}" style="color:red"
+					rendered="#{messageBean.renderErrorMessage}" />
+				<h:outputText value="#{messageBean.successMessage}"
+					style="color:green" rendered="#{messageBean.renderSuccessMessage}" />
+					<br />
 		<h:form enctype="multipart/form-data">
 			<h:panelGrid columns="2"
 				style="background-color: Beige;
@@ -34,7 +40,7 @@ border-bottom-style: solid;
 border-top-style: solid;
 border-left-style: solid;
 border-right-style: solid">
-
+				
 				<h:outputLabel value="CRN:" />
 				<h:inputText id="crn" value="#{uploadFileActionBean.crn}" size="30" />
 				<h:outputLabel value="Course Code:" />
@@ -43,7 +49,7 @@ border-right-style: solid">
 				<h:outputLabel value="Course Description:" />
 				<h:inputText id="description"
 					value="#{uploadFileActionBean.description}" size="30" />
-				
+
 				<h:outputLabel value="Select File to Upload:" />
 				<t:inputFileUpload id="fileUpload"
 					value="#{uploadFileActionBean.uploadedFile}" required="false"
@@ -75,9 +81,9 @@ border-right-style: solid">
 				<h:outputLabel value="Duration:" />
 				<h:inputText id="duration" value="#{uploadFileActionBean.duration}"
 					size="30" />
-					<h:outputLabel value="Points per Question:" /> 
-				<h:inputText id="points" value="#{uploadFileActionBean.pointsPerQues}"
-					size="30" />
+				<h:outputLabel value="Points per Question:" />
+				<h:inputText id="points"
+					value="#{uploadFileActionBean.pointsPerQues}" size="30" />
 				<h:commandButton id="upload"
 					action="#{uploadFileActionBean.processFileUpload}" value="Submit" />
 			</h:panelGrid>
@@ -91,73 +97,7 @@ border-right-style: solid">
 			<h:outputLabel rendered="#{uploadFileActionBean.uploadTest }"
 				value="File uploaded: " />
 			<hr />
-			<div
-				style="background-attachment: scroll; overflow: auto; height: 400px; background-repeat: repeat">
-				<t:dataTable value="#{uploadFileActionBean.testRoster}" var="row"
-					rendered="#{uploadFileActionBean.uploadTest}" border="1"
-					cellspacing="0" cellpadding="1" columnClasses="columnClass1 border"
-					headerClass="headerClass" footerClass="footerClass"
-					rowClasses="rowClass2" styleClass="dataTableEx" width="900">
-
-					<h:column>
-						<h:outputText value="#{row.question_type}" />
-					</h:column>
-
-					<h:column>
-						<h:outputText value="#{row.question_text}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.correct_ans}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.tolerance}" />
-					</h:column>
-
-				</t:dataTable>
-				<t:dataTable value="#{uploadFileActionBean.courseRoster}" var="row"
-					rendered="#{uploadFileActionBean.uploadCourse}" border="1"
-					cellspacing="0" cellpadding="1" columnClasses="columnClass1 border"
-					headerClass="headerClass" footerClass="footerClass"
-					rowClasses="rowClass2" styleClass="dataTableEx" width="900">
-
-					<h:column>
-						<h:outputText value="#{row.lastName}" />
-					</h:column>
-
-					<h:column>
-						<h:outputText value="#{row.firstName}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.userName}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.uin}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.lastAccess}" />
-					</h:column>
-
-					<h:column>
-						<h:outputText value="#{row.availability}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.total}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.exam01}" />
-					</h:column>
-
-					<h:column>
-						<h:outputText value="#{row.exam02}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.exam03}" />
-					</h:column>
-					<h:column>
-						<h:outputText value="#{row.project}" />
-					</h:column>
-				</t:dataTable>
-			</div>
+			
 		
 
 		</h:form>

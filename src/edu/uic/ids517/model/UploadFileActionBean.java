@@ -37,41 +37,13 @@ public class UploadFileActionBean {
 	private boolean uploadSuccess;
 	private boolean uploadTest = false;
 	private boolean uploadCourse = false;
-
-	public boolean isUploadTest() {
-		return uploadTest;
-	}
-
-	public void setUploadTest(boolean uploadTest) {
-		this.uploadTest = uploadTest;
-	}
-
-	private List<TestRoster> testRoster = new ArrayList<TestRoster>();
-	private List<CourseRoster> courseRoster = new ArrayList<CourseRoster>();
-
-	public List<TestRoster> getTestRoster() {
-		return testRoster;
-	}
-
-	public void setTestRoster(List<TestRoster> testRoster) {
-		this.testRoster = testRoster;
-	}
-
-	public boolean isUploadSuccess() {
-		return uploadSuccess;
-	}
-
-	public void setUploadSuccess(boolean uploadSuccess) {
-		this.uploadSuccess = uploadSuccess;
-	}
-
 	private int crn;
 	private String code;
 	private String description;
-	private int uin;
-	private String last_name;
-	private String first_name;
-	private String user_name;
+	/*
+	 * private int uin; private String last_name; private String first_name;
+	 * private String user_name;
+	 */
 
 	private String startDate;
 	private String endDate;
@@ -80,15 +52,7 @@ public class UploadFileActionBean {
 	private String duration;
 	private Double pointsPerQues;
 
-	public Double getPointsPerQues() {
-		return pointsPerQues;
-	}
-
-	public void setPointsPerQues(Double pointsPerQues) {
-		this.pointsPerQues = pointsPerQues;
-	}
-
-	//private List<String> inputList = new ArrayList<String>();
+	// private List<String> inputList = new ArrayList<String>();
 
 	@PostConstruct
 	public void init() {
@@ -201,7 +165,7 @@ public class UploadFileActionBean {
 			System.out.println(query);
 			dBAccessBean.execute(query);
 			for (String val : values) {
-System.out.println(values);
+				System.out.println(values);
 				input = val.split(separator);
 				String question_type = input[0];
 				String question_text = input[1];
@@ -256,7 +220,7 @@ System.out.println(values);
 
 			String courseQuery = "Insert into f16g321_course(crn,code,description) values(" + crn + ",'" + code + "','"
 					+ description + "');";
-
+			System.out.println("223");
 			dBAccessBean.execute(courseQuery);
 
 			/*
@@ -277,14 +241,14 @@ System.out.println(values);
 				if (i == 0) {
 					i++;
 					for (int a = 7; a < input.length; a++) {
-						testQuery = "Insert into f16g321_test(test_id,code,total,end_time) values ('" + inputHeader[a] + "','" + code
-								+ "', 250,'1999-12-12');";
+						testQuery = "Insert into f16g321_test(test_id,code,total,end_time) values ('" + inputHeader[a]
+								+ "','" + code + "', 250,'1999-12-12');";
 						dBAccessBean.execute(testQuery);
+						System.out.println("247");
 					}
 					continue;
 				}
 
-				
 				String lastName = input[0];
 				String firstName = input[1];
 				String userName = input[2];
@@ -292,19 +256,28 @@ System.out.println(values);
 				String lastAccess = input[4];
 				String availability = input[5];
 				Double total = Double.parseDouble((String) input[6]);
-
-				String studentQuery = "Insert into f16g321_student (uin,last_name,first_name,user_name) values(" + uin
-						+ ",'" + lastName + "','" + firstName + "','" + userName + "');";
-
+				String studentQuery = "Select count(*) from f16g321_student where  uin =" + uin + ";";
 				dBAccessBean.execute(studentQuery);
+				ResultSet rs = dBAccessBean.getResultSet();
+				int count = 0;
+				if (rs != null && rs.next()) {
+					count = rs.getInt(1);
+				}
+				if (count == 0) {
+					studentQuery = "Insert into f16g321_student (uin,last_name,first_name,user_name) values(" + uin
+							+ ",'" + lastName + "','" + firstName + "','" + userName + "');";
+					System.out.println("262");
+					dBAccessBean.execute(studentQuery);
+				}
 				String studentScores;
-				
+
 				double tempTotal = 0;
 				for (int a = 7; a < input.length; a++) {
 
 					studentScores = "Insert into f16g321_scores values(" + uin + ",'" + inputHeader[a] + "',"
 							+ Double.parseDouble(input[a]) + ", '" + code + "');";
 					dBAccessBean.execute(studentScores);
+					System.out.println("277");
 					tempTotal = tempTotal + Double.parseDouble(input[a]);
 
 				}
@@ -312,6 +285,7 @@ System.out.println(values);
 				String studentEnroll = "Insert into f16g321_student_enroll values('" + code + "'," + uin + ","
 						+ tempTotal + ");";
 				dBAccessBean.execute(studentEnroll);
+				System.out.println("280");
 				// Double exam01 = Double.parseDouble((String) input[7]);
 				// Double exam02 = Double.parseDouble((String) input[8]);
 				// Double exam03 = Double.parseDouble((String) input[9]);
@@ -337,34 +311,29 @@ System.out.println(values);
 
 			uploadCourse = true;
 
-		} catch(NumberFormatException n){
-			messageBean.setErrorMessage("Data Issue at row     "+values+ ".    File upload failed" + n);
-			
-		}
-		catch (Exception e) {
+		} catch (NumberFormatException n) {
+			messageBean.setErrorMessage("Data Issue at row     " + values + ".    File upload failed" + n);
+
+		} catch (Exception e) {
 			messageBean.setErrorMessage("Couldnt parse the file. File upload failed" + e);
 			e.printStackTrace();
 		}
 	}
 
-	/*public void executeCourseRoster(String[] values, int n) {
-		last_name = values[3];
-		first_name = values[4];
-		user_name = values[5];
-		uin = Integer.parseInt(values[6]);
-
-		if (n == 0) {
-			crn = Integer.parseInt(values[0]);
-			code = values[1];
-			description = values[2];
-			String course = "Insert into f16g321_course(crn,code,description) values(" + crn + ",'" + code + "','"
-					+ description + "')";
-			dBAccessBean.execute(course);
-		}
-		String query = "INSERT INTO f16g321_student (uin,last_name,first_name,user_name) VALUES (" + uin + ",'"
-				+ last_name + "','" + first_name + "','" + user_name + "')";
-		dBAccessBean.execute(query);
-	}*/
+	/*
+	 * public void executeCourseRoster(String[] values, int n) { last_name =
+	 * values[3]; first_name = values[4]; user_name = values[5]; uin =
+	 * Integer.parseInt(values[6]);
+	 * 
+	 * if (n == 0) { crn = Integer.parseInt(values[0]); code = values[1];
+	 * description = values[2]; String course =
+	 * "Insert into f16g321_course(crn,code,description) values(" + crn + ",'" +
+	 * code + "','" + description + "')"; dBAccessBean.execute(course); } String
+	 * query =
+	 * "INSERT INTO f16g321_student (uin,last_name,first_name,user_name) VALUES ("
+	 * + uin + ",'" + last_name + "','" + first_name + "','" + user_name + "')";
+	 * dBAccessBean.execute(query); }
+	 */
 
 	/*
 	 * public void test(String[] values, int n) { Random random = new Random();
@@ -571,5 +540,38 @@ System.out.println(values);
 		this.duration = duration;
 	}
 
-	
+	public boolean isUploadTest() {
+		return uploadTest;
+	}
+
+	public void setUploadTest(boolean uploadTest) {
+		this.uploadTest = uploadTest;
+	}
+
+	private List<TestRoster> testRoster = new ArrayList<TestRoster>();
+	private List<CourseRoster> courseRoster = new ArrayList<CourseRoster>();
+
+	public List<TestRoster> getTestRoster() {
+		return testRoster;
+	}
+
+	public void setTestRoster(List<TestRoster> testRoster) {
+		this.testRoster = testRoster;
+	}
+
+	public boolean isUploadSuccess() {
+		return uploadSuccess;
+	}
+
+	public void setUploadSuccess(boolean uploadSuccess) {
+		this.uploadSuccess = uploadSuccess;
+	}
+
+	public Double getPointsPerQues() {
+		return pointsPerQues;
+	}
+
+	public void setPointsPerQues(Double pointsPerQues) {
+		this.pointsPerQues = pointsPerQues;
+	}
 }

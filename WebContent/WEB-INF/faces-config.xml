@@ -56,6 +56,11 @@
 		<managed-bean-class>edu.uic.ids517.model.StudentLogin</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>feedbackBean</managed-bean-name>
+		<managed-bean-class>edu.uic.ids517.model.FeedbackBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 
 	<managed-bean>
 		<managed-bean-name>instructorActionBean</managed-bean-name>
@@ -83,6 +88,16 @@
 		<navigation-case>
 			<from-outcome>Success</from-outcome>
 			<to-view-id>/dataImport.jsp</to-view-id>
+			<redirect></redirect>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>BACK</from-outcome>
+			<to-view-id>/selectRole.jsp</to-view-id>
+			<redirect></redirect>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>NEXT</from-outcome>
+			<to-view-id>/instructor.jsp</to-view-id>
 			<redirect></redirect>
 		</navigation-case>
 		<navigation-case>
@@ -197,6 +212,10 @@
 			<from-outcome>LOGOUT</from-outcome>
 			<to-view-id>/logout.jsp</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-outcome>Review</from-outcome>
+			<to-view-id>/review.jsp</to-view-id>
+		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
 		<from-view-id>/instructor.jsp</from-view-id>
@@ -240,4 +259,11 @@
 			<to-view-id>/logout.jsp</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-</faces-config>
+<navigation-rule>
+		<from-view-id>/review.jsp</from-view-id>
+
+		<navigation-case>
+			<from-outcome>LOGOUT</from-outcome>
+			<to-view-id>/logout.jsp</to-view-id>
+		</navigation-case>
+	</navigation-rule></faces-config>

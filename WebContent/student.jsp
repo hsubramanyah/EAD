@@ -7,16 +7,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Courses</title>
+<title>f16g321 Student Courses</title>
 </head>
 <body>
 	<f:view>
 		<div align="center">
 			<h:form>
-				<h3 align="center">f16g321 Courses</h3>
+				<h3 align="center">f16g321 Student Courses</h3>
 				<hr />
 				<br />
-				<h:commandButton type="submit" value="Home" action="index" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Change Role"
 					action="selectRole" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
@@ -26,6 +25,8 @@
 		</div>
 		<hr />
 		<h:form>
+		<h:outputText value="#{messageBean.errorMessage}" style="color:red"
+					rendered="#{messageBean.renderErrorMessage}" />
 			<h:panelGrid columns="2">
 				<h:commandButton type="submit" value="View Tests"
 					action="#{actionStudentBean.listTests}" />

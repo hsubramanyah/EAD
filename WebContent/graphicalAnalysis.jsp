@@ -140,7 +140,7 @@
 				<br />
 				<h:panelGrid columns="2" border="1">
 				<h:outputText value="Significance:" />
-				<h:outputText value="#{graphicalAnalysis.renderNumAnalysis =false;}" />
+				<h:outputText value="#{graphicalAnalysis.rSignificance}" /> 
 				<h:outputText value="Regression Equation:" />
 				<h:outputText value="#{graphicalAnalysis.rEquation}" />
 				
@@ -176,7 +176,7 @@
 				style="background-attachment: scroll; overflow: auto; height: aoto; background-repeat: repeat"
 				align="center">
 				<h:graphicImage value="#{graphicalAnalysis.xYchartPath}"
-					height="450" width="600"
+					height="450" width="600" 
 					rendered="#{graphicalAnalysis.renderXYChart}" alt="XY Series" />
 
 			</div>

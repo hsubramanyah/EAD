@@ -1,5 +1,7 @@
 package edu.uic.ids517.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,22 +11,40 @@ import javax.faces.context.FacesContext;
 import javax.servlet.jsp.jstl.sql.Result;
 
 public class ActionStudentBean {
-	private String course;
-
-	private String test;
-
+	private String course = "";
+	private String test = "";
 	private List<String> courses;
 	private List<String> tests;
+	private int availableScore;
+
+	public int getAvailableScore() {
+		return availableScore;
+	}
+
+	public void setAvailableScore(int availableScore) {
+		this.availableScore = availableScore;
+	}
 
 	private List<String> availableTests;
+
+	private boolean testScore;
+
+	public boolean isTestScore() {
+		return testScore;
+	}
+
+	public void setTestScore(boolean testScore) {
+		this.testScore = testScore;
+	}
+
 	private boolean renderCourseList;
 	private boolean renderTestList;
-
 	private DBAccessBean dbaseBean;
 	private FacesContext context;
 	private Result result;
+	private StudentLogin studentLoginBean;
+	private MessageBean messageBean;
 
-private StudentLogin studentLoginBean;
 	public ActionStudentBean() {
 		setCourses(new ArrayList<String>());
 
@@ -38,40 +58,76 @@ private StudentLogin studentLoginBean;
 		Map<String, Object> m = context.getExternalContext().getSessionMap();
 		dbaseBean = (DBAccessBean) m.get("dBAccessBean");
 		studentLoginBean = (StudentLogin) m.get("studentLoginBean");
-		
+		messageBean = (MessageBean) m.get("messageBean");
+		String query = "select distinct se.code from f16g321_student_enroll se join f16g321_student s on s.uin=se.uin where s.user_name='"
+				+ studentLoginBean.getUserName() + "';";
 
-		String query = "select distinct se.code from f16g321_student_enroll se join f16g321_student s on s.uin=se.uin where s.user_name='"+studentLoginBean.getUserName()+"';";
-		if(dbaseBean!=null)
-		courses = dbaseBean.executequeryList(query);
-		// System.out.println(courses.toString());
+		if (dbaseBean != null)
+			courses = dbaseBean.executequeryList(query);
 		setRenderCourseList(true);
-		// System.out.println("query executed"+" Rendered = "
-		// +renderCourseList);
 
 	}
 
 	public void listTests() {
+		messageBean.resetAll();
+		if(course.isEmpty()){
+			messageBean.setErrorMessage("Please select Course Name from the list");
+			messageBean.setRenderErrorMessage(true);
+			return;
+		}
 		String query = "select t.test_id from f16g321_test t join f16g321_course c on c.code=t.code where c.code='"
 				+ course + "';";
 		tests = dbaseBean.executequeryList(query);
-		// System.out.println(tests.toString());
 		setRenderTestList(true);
-		// System.out.println("query executed" + " Rendered = " +
-		// renderTestList);
+
 	}
 
-public String takeTest(){
-	java.sql.Timestamp sqlDate = new java.sql.Timestamp(System.currentTimeMillis());
-	String query = "select t.test_id from f16g321_test t join f16g321_course c on c.code=t.code where c.code='"
-			+ course + "' and t.end_time > '"+sqlDate +"';";
-	availableTests=dbaseBean.executequeryList(query);
-	
-	if(availableTests.contains(test)){
-		return "Test";
+	public String takeTest() {
+		messageBean.resetAll();
+		if(course.isEmpty()){
+			messageBean.setErrorMessage("Please select Course Name from the list");
+			messageBean.setRenderErrorMessage(true);
+			return "FAIL";
+		} else if (test.isEmpty()){
+			messageBean.setErrorMessage("Please List Test and select Test Name from the list");
+			messageBean.setRenderErrorMessage(true);
+			return "FAIL";
+		}
+		
+		java.sql.Timestamp sqlDate = new java.sql.Timestamp(System.currentTimeMillis());
+		String query = "select t.test_id from f16g321_test t join f16g321_course c on c.code=t.code where c.code='"
+				+ course + "' and t.end_time > '" + sqlDate + "';";
+		availableTests = dbaseBean.executequeryList(query);
+
+		if (availableTests.contains(test)) {
+			testScore = false;
+			return "Test";
+		} else {
+			testScore = true;
+			updateScore();
+			return "Feedback";
+
+		}
 	}
-	else
-	return "Feedback";
-}
+
+	public void updateScore() {
+		messageBean.resetAll();
+		String scoreQuery = "select sc.score from f16g321_scores sc join f16g321_student s on s.uin =sc.uin where sc.test_id='"
+				+ test + "' and s.user_name='" + studentLoginBean.getUserName() + "';";
+		if (dbaseBean != null) {
+			dbaseBean.execute(scoreQuery);
+		}
+		ResultSet rs = dbaseBean.getResultSet();
+		try {
+			if (rs != null) {
+				rs.first();
+				availableScore = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+
+		}
+	}
+
 	public Result getResult() {
 		return result;
 	}
@@ -128,5 +184,4 @@ public String takeTest(){
 		this.test = test;
 	}
 
-	
 }

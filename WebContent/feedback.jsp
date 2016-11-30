@@ -16,11 +16,11 @@
 				<h3 align="center">f16g321 Score</h3>
 				<hr />
 				<br />
-				<h:commandButton type="submit" value="Home" action="index" /> &nbsp;&nbsp;&nbsp;
+				<h:commandButton type="submit" value="Student Home Page" action="student" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Change Role"
 					action="selectRole" /> &nbsp;&nbsp;&nbsp;
 				<h:commandButton type="submit" value="Logout"
-					action="#{dBAccessActionBean.logout}" />&nbsp;&nbsp;&nbsp;
+					action="#{dBAccessActionBean.studentLogout}" />&nbsp;&nbsp;&nbsp;
 		</h:form>
 			<br /> <br />
 		</div>
@@ -35,8 +35,13 @@
 		</p>
 		<p>
 			Score :
-			<h:outputText value="#{actionTestBean.score }"></h:outputText>
+			<h:outputText value="#{actionStudentBean.availableScore }"></h:outputText>
 		</p>
+		<br/>
+		<h:form>
+		<h:commandButton type="submit" value="View Answers"
+					action="#{feedbackBean.getFB }" />
+		</h:form>
 	</f:view>
 </body>
 </html>

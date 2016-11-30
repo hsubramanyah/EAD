@@ -35,273 +35,49 @@ public class GraphicalAnalysis {
 			Arrays.asList("Pie Chart", "Bar Graph", "Histogram", "X-Y Series"));
 	private List<String> ScoreList;
 	private String graphTypeSelected = "";
-	private String perdictorData;
-	private String responseData;
 	private boolean renderXScoreList = false;
 	private boolean renderYScoreList = false;
 	private boolean renderNumAnalysis = false;
 	private double[] xArrayValues;
 	private double[] yArrayValues;
-	private double intercept;					
+	private double intercept;
 	private double slope;
 	private double rSqr;
 	private double interceptStdError;
 	private double slopeStdError;
-	private double rSignificance ;
+	private double rSignificance;
 	private String rEquation;
-
-	public String getrEquation() {
-		return rEquation;
-	}
-
-	public double getIntercept() {
-		return round(intercept);
-	}
-
-	public double getSlope() {
-		return round(slope);
-	}
-
-	public double getrSqr() {
-		return round(rSqr);
-	}
-
-	public double getInterceptStdError() {
-		return round(interceptStdError);
-	}
-
-	public double getSlopeStdError() {
-		return round(slopeStdError);
-	}
-
-	public double getrSignificance() {
-		return round(rSignificance);
-	}
-
-	public boolean isRenderNumAnalysis() {
-		return renderNumAnalysis;
-	}
-
-	double minValue;
-
-	public double getMinValue() {
-		return round(minValue);
-	}
-
-	public double getMaxValue() {
-		return round(maxValue);
-	}
-
-	public double getMean() {
-		return round(mean);
-	}
-
-	public double getVariance() {
-		return round(variance);
-	}
-
-	public double getStd() {
-		return round(std);
-	}
-
-	public double getMedian() {
-		return round(median);
-	}
-
-	public double getQ1() {
-		return round(q1);
-	}
-
-	public double getQ3() {
-		return round(q3);
-	}
-
-	public double getIqr() {
-		return round(iqr);
-	}
-
-	double maxValue;
-	double mean;
-	double variance;
-	double std;
-	double median;
-	double q1;
-	double q3;
-	double iqr;
-	double range;
-
-	public boolean isRenderYScoreList() {
-		return renderYScoreList;
-	}
-
-	public void setRenderYScoreList(boolean renderYScoreList) {
-		this.renderYScoreList = renderYScoreList;
-	}
-
-	private String scoreXSelected ="";
-	private String scoreYSelected ="";
-
-	public String getScoreYSelected() {
-		return scoreYSelected;
-	}
-
-	public void setScoreYSelected(String scoreYSelected) {
-		this.scoreYSelected = scoreYSelected;
-	}
-
+	private double minValue;
+	private double maxValue;
+	private double mean;
+	private double variance;
+	private double std;
+	private double median;
+	private double q1;
+	private double q3;
+	private double iqr;
+	private double range;
+	private String scoreXSelected = "";
+	private String scoreYSelected = "";
 	private ResultSet rs;
 	private DefaultPieDataset pieDataset = new DefaultPieDataset();
 	private DefaultCategoryDataset catDataset = new DefaultCategoryDataset();
 	private HistogramDataset histDataset;
 	private XYSeries xYSeries;
 	private XYSeriesCollection xYSeriesCollection;
-	double total;
-	List<Double> values;
-	List<Double> valuesY;
+	private double total;
+	private List<Double> values;
+	private List<Double> valuesY;
 	private boolean renderPieChart = false;
 	private boolean renderBarChart = false;
 	private boolean renderHistChart = false;
 	private boolean renderXYChart = false;
 	private String xYchartPath;
 	private boolean renderRegAnalysis = false;
-
-	public boolean isRenderRegAnalysis() {
-		return renderRegAnalysis;
-	}
-
-	public boolean isRenderXYChart() {
-		return renderXYChart;
-	}
-
-	public void setRenderXYChart(boolean renderXYChart) {
-		this.renderXYChart = renderXYChart;
-	}
-
-	public String getxYchartPath() {
-		return xYchartPath;
-	}
-
-	public void setxYchartPath(String xYchartPath) {
-		this.xYchartPath = xYchartPath;
-	}
-
-	private String histchartPath;
-
-	public boolean isRenderHistChart() {
-		return renderHistChart;
-	}
-
-	public void setRenderHistChart(boolean renderHistChart) {
-		this.renderHistChart = renderHistChart;
-	}
-
-	public String getHistchartPath() {
-		return histchartPath;
-	}
-
-	public void setHistchartPath(String histchartPath) {
-		this.histchartPath = histchartPath;
-	}
-
-	public boolean isRenderPieChart() {
-		return renderPieChart;
-	}
-
-	public void setRenderPieChart(boolean renderPieChart) {
-		this.renderPieChart = renderPieChart;
-	}
-
-	public boolean isRenderBarChart() {
-		return renderBarChart;
-	}
-
-	public void setRenderBarChart(boolean renderBarChart) {
-		this.renderBarChart = renderBarChart;
-	}
-
-	public String getScoreXSelected() {
-		return scoreXSelected;
-	}
-
-	public void setScoreXSelected(String scoreXSelected) {
-		this.scoreXSelected = scoreXSelected;
-	}
-
-	public List<String> getScoreList() {
-		return ScoreList;
-	}
-
-	public void setScoreList(List<String> scoreList) {
-		ScoreList = scoreList;
-	}
-
-	public boolean isrenderXScoreList() {
-		return renderXScoreList;
-	}
-
-	public void setrenderXScoreList(boolean renderXScoreList) {
-		this.renderXScoreList = renderXScoreList;
-	}
-
 	private boolean renderGraphList = false;
 	private String piechartPath;
 	private String barchartPath;
-
-	public String getBarchartPath() {
-		return barchartPath;
-	}
-
-	public void setBarchartPath(String barchartPath) {
-		this.barchartPath = barchartPath;
-	}
-
-	public String getPiechartPath() {
-		return piechartPath;
-	}
-
-	public void setPiechartPath(String piechartPath) {
-		this.piechartPath = piechartPath;
-	}
-
-	public boolean isRenderGraphList() {
-		return renderGraphList;
-	}
-
-	public void setRenderGraphList(boolean renderGraphList) {
-		this.renderGraphList = renderGraphList;
-	}
-
-	public String getGraphTypeSelected() {
-		return graphTypeSelected;
-	}
-
-	public void setGraphTypeSelected(String graphTypeSelected) {
-		this.graphTypeSelected = graphTypeSelected;
-	}
-
-	public String getPerdictorData() {
-		return perdictorData;
-	}
-
-	public void setPerdictorData(String perdictorData) {
-		this.perdictorData = perdictorData;
-	}
-
-	public String getResponseData() {
-		return responseData;
-	}
-
-	public void setResponseData(String responseData) {
-		this.responseData = responseData;
-	}
-
-	public List<String> getListGraph() {
-		return listGraph;
-	}
-
-	public void setListGraph(List<String> listGraph) {
-		this.listGraph = listGraph;
-	}
+	private String histchartPath;
 
 	@PostConstruct
 	public void init() {
@@ -655,15 +431,16 @@ public class GraphicalAnalysis {
 						sr.addData(xArrayValues[i], yArrayValues[i]);
 						i++;
 					}
-					intercept = sr.getIntercept();					
-					slope = 	sr.getSlope();
+					intercept = sr.getIntercept();
+					slope = sr.getSlope();
 					rSqr = sr.getRSquare();
 					interceptStdError = sr.getInterceptStdErr();
-					slopeStdError=  sr.getSlopeStdErr();
+					slopeStdError = sr.getSlopeStdErr();
 					rSignificance = sr.getSignificance();
 					renderRegAnalysis = true;
-					renderNumAnalysis =false;
-					rEquation = scoreYSelected+" = "+ round(intercept) + " + " +round(slope)+" * "+scoreXSelected;
+					renderNumAnalysis = false;
+					rEquation = scoreYSelected + " = " + round(intercept) + " + " + round(slope) + " * "
+							+ scoreXSelected;
 				} else {
 					return "FAIL";
 				}
@@ -675,12 +452,12 @@ public class GraphicalAnalysis {
 
 		return "SUCCESS";
 	}
-	
-	public double round(double d){
-		if (10<Math.abs(d)){
-			d= Math.round(d * 100.0) / 100.0;
+
+	public double round(double d) {
+		if (10 < Math.abs(d)) {
+			d = Math.round(d * 100.0) / 100.0;
 		} else {
-			d= Math.round(d * 10000.0) / 10000.0;
+			d = Math.round(d * 10000.0) / 10000.0;
 		}
 		return d;
 	}
@@ -689,4 +466,206 @@ public class GraphicalAnalysis {
 		return range;
 	}
 
+	public String getrEquation() {
+		return rEquation;
+	}
+
+	public double getIntercept() {
+		return round(intercept);
+	}
+
+	public double getSlope() {
+		return round(slope);
+	}
+
+	public double getrSqr() {
+		return round(rSqr);
+	}
+
+	public double getInterceptStdError() {
+		return round(interceptStdError);
+	}
+
+	public double getSlopeStdError() {
+		return round(slopeStdError);
+	}
+
+	public double getrSignificance() {
+		return round(rSignificance);
+	}
+
+	public boolean isRenderNumAnalysis() {
+		return renderNumAnalysis;
+	}
+
+	public double getMinValue() {
+		return round(minValue);
+	}
+
+	public double getMaxValue() {
+		return round(maxValue);
+	}
+
+	public double getMean() {
+		return round(mean);
+	}
+
+	public double getVariance() {
+		return round(variance);
+	}
+
+	public double getStd() {
+		return round(std);
+	}
+
+	public double getMedian() {
+		return round(median);
+	}
+
+	public double getQ1() {
+		return round(q1);
+	}
+
+	public double getQ3() {
+		return round(q3);
+	}
+
+	public double getIqr() {
+		return round(iqr);
+	}
+
+	public boolean isRenderYScoreList() {
+		return renderYScoreList;
+	}
+
+	/*public void setRenderYScoreList(boolean renderYScoreList) {
+		this.renderYScoreList = renderYScoreList;
+	}*/
+
+	public String getScoreYSelected() {
+		return scoreYSelected;
+	}
+
+	public void setScoreYSelected(String scoreYSelected) {
+		this.scoreYSelected = scoreYSelected;
+	}
+
+	public boolean isRenderRegAnalysis() {
+		return renderRegAnalysis;
+	}
+
+	public boolean isRenderXYChart() {
+		return renderXYChart;
+	}
+
+	/*public void setRenderXYChart(boolean renderXYChart) {
+		this.renderXYChart = renderXYChart;
+	}*/
+
+	public String getxYchartPath() {
+		return xYchartPath;
+	}
+
+	/*public void setxYchartPath(String xYchartPath) {
+		this.xYchartPath = xYchartPath;
+	}*/
+
+	
+
+	public boolean isRenderHistChart() {
+		return renderHistChart;
+	}
+
+	/*public void setRenderHistChart(boolean renderHistChart) {
+		this.renderHistChart = renderHistChart;
+	}*/
+
+	public String getHistchartPath() {
+		return histchartPath;
+	}
+
+	/*public void setHistchartPath(String histchartPath) {
+		this.histchartPath = histchartPath;
+	}*/
+
+	public boolean isRenderPieChart() {
+		return renderPieChart;
+	}
+
+	/*public void setRenderPieChart(boolean renderPieChart) {
+		this.renderPieChart = renderPieChart;
+	}*/
+
+	public boolean isRenderBarChart() {
+		return renderBarChart;
+	}
+
+	/*public void setRenderBarChart(boolean renderBarChart) {
+		this.renderBarChart = renderBarChart;
+	}*/
+
+	public String getScoreXSelected() {
+		return scoreXSelected;
+	}
+
+	public void setScoreXSelected(String scoreXSelected) {
+		this.scoreXSelected = scoreXSelected;
+	}
+
+	public List<String> getScoreList() {
+		return ScoreList;
+	}
+
+	/*public void setScoreList(List<String> scoreList) {
+		ScoreList = scoreList;
+	}*/
+
+	public boolean isrenderXScoreList() {
+		return renderXScoreList;
+	}
+
+	/*public void setrenderXScoreList(boolean renderXScoreList) {
+		this.renderXScoreList = renderXScoreList;
+	}*/
+
+	public String getBarchartPath() {
+		return barchartPath;
+	}
+
+	/*public void setBarchartPath(String barchartPath) {
+		this.barchartPath = barchartPath;
+	}*/
+
+	public String getPiechartPath() {
+		return piechartPath;
+	}
+
+	/*public void setPiechartPath(String piechartPath) {
+		this.piechartPath = piechartPath;
+	}*/
+
+	public boolean isRenderGraphList() {
+		return renderGraphList;
+	}
+
+	/*public void setRenderGraphList(boolean renderGraphList) {
+		this.renderGraphList = renderGraphList;
+	}*/
+
+	public String getGraphTypeSelected() {
+		return graphTypeSelected;
+	}
+
+	public void setGraphTypeSelected(String graphTypeSelected) {
+		this.graphTypeSelected = graphTypeSelected;
+	}
+
+	public List<String> getListGraph() {
+		return listGraph;
+	}
+
+	/*
+	 * public void setListGraph(List<String> listGraph) { this.listGraph =
+	 * listGraph; }
+	 */
 }

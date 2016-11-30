@@ -34,7 +34,6 @@ public class InstructorActionBean {
 	private List<String> testList;
 	private String testSelected;
 	private boolean testListRendered = false;
-	// private List<String> studentList;
 	private ResultSet rs;
 	private CourseRoster courseRoster;
 	private Question question;
@@ -51,155 +50,6 @@ public class InstructorActionBean {
 	private DataModel<String> mStudentDataModel;
 	private DataModel<String> mColumns;
 	private HashMap<String, String> hm = new HashMap<String, String>();
-
-	public boolean isRenderDynCourseRosterList() {
-		return renderDynCourseRosterList;
-	}
-
-	public void setRenderDynCourseRosterList(boolean renderDynCourseRosterList) {
-		this.renderDynCourseRosterList = renderDynCourseRosterList;
-	}
-
-	public DataModel<String> getmStudentDataModel() {
-		return mStudentDataModel;
-	}
-
-	public void setmStudentDataModel(DataModel<String> mStudentDataModel) {
-		this.mStudentDataModel = mStudentDataModel;
-	}
-
-	public DataModel<String> getmColumns() {
-		return mColumns;
-	}
-
-	public void setmColumns(DataModel<String> mColumns) {
-		this.mColumns = mColumns;
-	}
-
-	public Object getColumnValue() {
-		Object row = mStudentDataModel.getRowData();
-		System.out.println("row " + row);
-		Object column = mColumns.getRowData();
-		System.out.println("col " + column);
-		String key = Integer.toString(mStudentDataModel.getRowIndex()) + "," + Integer.toString(mColumns.getRowIndex());
-		if (mColumns.getRowIndex() > 5) {
-			return Double.parseDouble(hm.get(key));
-
-		}
-		return hm.get(key);
-	}
-
-	public String getChartPath() {
-		return chartPath;
-	}
-
-	public void setChartPath(String chartPath) {
-		this.chartPath = chartPath;
-	}
-
-	public int getNoOfRows() {
-		return noOfRows;
-	}
-
-	public boolean isRenderTestQuestionList() {
-		return renderTestQuestionList;
-	}
-
-	public List<Question> getQuestionList() {
-		return questionList;
-	}
-
-	public void setQuestionList(List<Question> questionList) {
-		this.questionList = questionList;
-	}
-
-	public void setRenderTestQuestionList(boolean renderTestQuestionList) {
-		this.renderTestQuestionList = renderTestQuestionList;
-	}
-
-	private String sortColumn;
-
-	public String getSortColumn() {
-		return sortColumn;
-	}
-
-	public void setSortColumn(String sortColumn) {
-		this.sortColumn = sortColumn;
-	}
-
-	public boolean isAscending() {
-		return ascending;
-	}
-
-	public void setAscending(boolean ascending) {
-		this.ascending = ascending;
-	}
-
-	private boolean ascending = true;
-
-	public boolean isRenderCourseRosterList() {
-		return renderCourseRosterList;
-	}
-
-	public void setRenderCourseRosterList(boolean renderCourseRosterList) {
-		this.renderCourseRosterList = renderCourseRosterList;
-	}
-
-	public List<CourseRoster> getCourseRosterList() {
-		return courseRosterList;
-	}
-
-	public void setCourseRosterList(List<CourseRoster> courseRosterList) {
-		this.courseRosterList = courseRosterList;
-	}
-
-	public List<String> getCourseList() {
-		return courseList;
-	}
-
-	public void setCourseList(List<String> courseList) {
-		this.courseList = courseList;
-	}
-
-	public String getCourseSelected() {
-		return courseSelected;
-	}
-
-	public void setCourseSelected(String courseSelected) {
-		this.courseSelected = courseSelected;
-	}
-
-	public boolean isCourseListRendered() {
-		return courseListRendered;
-	}
-
-	public void setCourseListRendered(boolean courseListRendered) {
-		this.courseListRendered = courseListRendered;
-	}
-
-	public List<String> getTestList() {
-		return testList;
-	}
-
-	public void setTestList(List<String> testList) {
-		this.testList = testList;
-	}
-
-	public String getTestSelected() {
-		return testSelected;
-	}
-
-	public void setTestSelected(String testSelected) {
-		this.testSelected = testSelected;
-	}
-
-	public boolean isTestListRendered() {
-		return testListRendered;
-	}
-
-	public void setTestListRendered(boolean testListRendered) {
-		this.testListRendered = testListRendered;
-	}
 
 	@PostConstruct
 	public void init() {
@@ -523,43 +373,194 @@ public class InstructorActionBean {
 	}
 
 	public String transactionLog() {
-		System.out.println("*******************"+courseSelected);
-		if(courseSelected.isEmpty()){
+		System.out.println("*******************" + courseSelected);
+		if (courseSelected.isEmpty()) {
 			messageBean.setErrorMessage("Please select Course Name from the list");
 			messageBean.setRenderErrorMessage(true);
 			return "FAIL";
-		} else{
-		String query = "select s.user_name,s.last_access,s.end_time,s.last_login_ip from f16g321_student s join f16g321_student_enroll se on se.uin=s.uin where se.code='"+courseSelected+"';";
-		try{
-		dBAccessBean.execute(query);
-		ResultSet rs = dBAccessBean.getResultSet();
-		StringBuffer sb = new StringBuffer("User Name \t Last Access \t End Time \t Login Ip");
-		sb.append(System.getProperty("line.separator"));
-		if (rs != null) {
-			while (rs.next()) {
-				
-				sb.append(rs.getString(1)).append("\t");
-				sb.append(rs.getString(2)).append("\t");
-				sb.append(rs.getString(3)).append("\t");
-				sb.append(rs.getString(4)).append("\t");
+		} else {
+			String query = "select s.user_name,s.last_access,s.end_time,s.last_login_ip from f16g321_student s join f16g321_student_enroll se on se.uin=s.uin where se.code='"
+					+ courseSelected + "';";
+			try {
+				dBAccessBean.execute(query);
+				ResultSet rs = dBAccessBean.getResultSet();
+				StringBuffer sb = new StringBuffer("User Name \t Last Access \t End Time \t Login Ip");
 				sb.append(System.getProperty("line.separator"));
+				if (rs != null) {
+					while (rs.next()) {
+
+						sb.append(rs.getString(1)).append("\t");
+						sb.append(rs.getString(2)).append("\t");
+						sb.append(rs.getString(3)).append("\t");
+						sb.append(rs.getString(4)).append("\t");
+						sb.append(System.getProperty("line.separator"));
+					}
+					List temp = new ArrayList();
+					downloadFile(temp, courseSelected + "_Student_Transaction.txt", "text/tab-separated-values",
+							sb.toString());
+				}
+			} catch (SQLException e) {
+
 			}
-			List temp = new ArrayList() ;
-			downloadFile(temp, courseSelected + "_Student_Transaction.txt", "text/tab-separated-values",
-					sb.toString());
 		}
-		}catch(SQLException e){
-			
-		}
-		}
-		
+
 		return "Fail";
 	}
-
+	
 	public String toGraph() {
-		
+
 		messageBean.resetAll();
 		return "GRAPH";
 	}
+	public Object getColumnValue() {
+		Object row = mStudentDataModel.getRowData();
+		System.out.println("row " + row);
+		Object column = mColumns.getRowData();
+		System.out.println("col " + column);
+		String key = Integer.toString(mStudentDataModel.getRowIndex()) + "," + Integer.toString(mColumns.getRowIndex());
+		if (mColumns.getRowIndex() > 5) {
+			return Double.parseDouble(hm.get(key));
+
+		}
+		return hm.get(key);
+	}
+
+	public boolean isRenderDynCourseRosterList() {
+		return renderDynCourseRosterList;
+	}
+
+	public void setRenderDynCourseRosterList(boolean renderDynCourseRosterList) {
+		this.renderDynCourseRosterList = renderDynCourseRosterList;
+	}
+
+	public DataModel<String> getmStudentDataModel() {
+		return mStudentDataModel;
+	}
+
+	public void setmStudentDataModel(DataModel<String> mStudentDataModel) {
+		this.mStudentDataModel = mStudentDataModel;
+	}
+
+	public DataModel<String> getmColumns() {
+		return mColumns;
+	}
+
+	public void setmColumns(DataModel<String> mColumns) {
+		this.mColumns = mColumns;
+	}
+	public String getChartPath() {
+		return chartPath;
+	}
+
+	public void setChartPath(String chartPath) {
+		this.chartPath = chartPath;
+	}
+
+	public int getNoOfRows() {
+		return noOfRows;
+	}
+
+	public boolean isRenderTestQuestionList() {
+		return renderTestQuestionList;
+	}
+
+	public List<Question> getQuestionList() {
+		return questionList;
+	}
+
+	public void setQuestionList(List<Question> questionList) {
+		this.questionList = questionList;
+	}
+
+	public void setRenderTestQuestionList(boolean renderTestQuestionList) {
+		this.renderTestQuestionList = renderTestQuestionList;
+	}
+
+	private String sortColumn;
+
+	public String getSortColumn() {
+		return sortColumn;
+	}
+
+	public void setSortColumn(String sortColumn) {
+		this.sortColumn = sortColumn;
+	}
+
+	public boolean isAscending() {
+		return ascending;
+	}
+
+	public void setAscending(boolean ascending) {
+		this.ascending = ascending;
+	}
+
+	private boolean ascending = true;
+
+	public boolean isRenderCourseRosterList() {
+		return renderCourseRosterList;
+	}
+
+	public void setRenderCourseRosterList(boolean renderCourseRosterList) {
+		this.renderCourseRosterList = renderCourseRosterList;
+	}
+
+	public List<CourseRoster> getCourseRosterList() {
+		return courseRosterList;
+	}
+
+	public void setCourseRosterList(List<CourseRoster> courseRosterList) {
+		this.courseRosterList = courseRosterList;
+	}
+
+	public List<String> getCourseList() {
+		return courseList;
+	}
+
+	public void setCourseList(List<String> courseList) {
+		this.courseList = courseList;
+	}
+
+	public String getCourseSelected() {
+		return courseSelected;
+	}
+
+	public void setCourseSelected(String courseSelected) {
+		this.courseSelected = courseSelected;
+	}
+
+	public boolean isCourseListRendered() {
+		return courseListRendered;
+	}
+
+	public void setCourseListRendered(boolean courseListRendered) {
+		this.courseListRendered = courseListRendered;
+	}
+
+	public List<String> getTestList() {
+		return testList;
+	}
+
+	public void setTestList(List<String> testList) {
+		this.testList = testList;
+	}
+
+	public String getTestSelected() {
+		return testSelected;
+	}
+
+	public void setTestSelected(String testSelected) {
+		this.testSelected = testSelected;
+	}
+
+	public boolean isTestListRendered() {
+		return testListRendered;
+	}
+
+	public void setTestListRendered(boolean testListRendered) {
+		this.testListRendered = testListRendered;
+	}
+
+	
+	
 
 }

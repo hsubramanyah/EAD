@@ -25,7 +25,6 @@ public class DBAccessBean {
 	private ResultSetMetaData resultSetMetaData;
 	private List<String> columnNamesSelected;
 	private FacesContext context;
-	//private Boolean status;
 	private static final String[] TABLE_TYPES = { "TABLE", "VIEW" };
 	private String jdbcDriver;
 	private String url;
@@ -35,11 +34,8 @@ public class DBAccessBean {
 	private static final String DB2 = "DB2";
 	private static final String ORACLE = "Oracle";
 	private String message = "";
-	//private Boolean renderMessage = false;
 	private int numOfCols = 0;
 	private int numOfRows = 0;
-
-	// constants for SQLException
 	private static final String ACCESS_DENIED = "28000";
 	private static final String INVALID_DB_SCHEMA = "42000";
 	private static final String TIMEOUT = "08S01";
@@ -57,48 +53,6 @@ public class DBAccessBean {
 		dBAccessInfoBean = (DBAccessInfoBean) m.get("dBAccessInfoBean");
 		messageBean = (MessageBean) m.get("messageBean");
 
-	}
-
-	public List<String> getColumnNamesSelected() {
-		return columnNamesSelected;
-	}
-
-	public ResultSetMetaData getResultSetMetaData() {
-		return resultSetMetaData;
-	}
-
-	private Result result;
-
-	public Result getResult() {
-		return result;
-	}
-
-	/*public Boolean getStatus() {
-		return status;
-	}
-
-	public Boolean getRenderMessage() {
-		return renderMessage;
-	}*/
-
-	public ResultSet getResultSet() {
-		return resultSet;
-	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public int getNumOfCols() {
-		return numOfCols;
-	}
-
-	public int getNumOfRows() {
-		return numOfRows;
-	}
-
-	public String getMessage() {
-		return message;
 	}
 
 	public String connectDB() {
@@ -126,7 +80,6 @@ public class DBAccessBean {
 					dBAccessInfoBean.getPassword());
 			statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			databaseMetaData = connection.getMetaData();
-			//status = Boolean.TRUE;
 			return "SUCCESS";
 		} catch (ClassNotFoundException ce) {
 			message = "Database: " + dBAccessInfoBean.getDbms() + " not supported.";
@@ -144,8 +97,8 @@ public class DBAccessBean {
 			} else if (se.getSQLState().equals(INVALID_PORT)) {
 				message = "Invalid port. It must contain only digits!";
 			} else {
-				message = "SQL Exception occurred!\n" + "Error Code: " + se.getErrorCode() + "\n"
-						+ "SQL State: " + se.getSQLState() + "\n" + "Message :" + se.getMessage() + "\n\n";
+				message = "SQL Exception occurred!\n" + "Error Code: " + se.getErrorCode() + "\n" + "SQL State: "
+						+ se.getSQLState() + "\n" + "Message :" + se.getMessage() + "\n\n";
 			}
 			messageBean.setErrorMessage(message);
 			messageBean.setRenderErrorMessage(true);
@@ -176,11 +129,11 @@ public class DBAccessBean {
 				connection.close();
 
 			}
-			//status = Boolean.FALSE;
+
 		} catch (SQLException e) {
-			
-			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n"
-					+ "SQL State: " + e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
+
+			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n" + "SQL State: "
+					+ e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
 			messageBean.setErrorMessage(message);
 			messageBean.setRenderErrorMessage(true);
 		}
@@ -207,8 +160,8 @@ public class DBAccessBean {
 				}
 			}
 		} catch (SQLException e) {
-			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n"
-					+ "SQL State: " + e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
+			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n" + "SQL State: "
+					+ e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
 			messageBean.setErrorMessage(message);
 			messageBean.setRenderErrorMessage(true);
 		}
@@ -231,8 +184,8 @@ public class DBAccessBean {
 				}
 			}
 		} catch (SQLException e) {
-			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n"
-					+ "SQL State: " + e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
+			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n" + "SQL State: "
+					+ e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
 			messageBean.setErrorMessage(message);
 			messageBean.setRenderErrorMessage(true);
 		}
@@ -262,15 +215,15 @@ public class DBAccessBean {
 					statement.executeUpdate(query);
 
 				}
-				
 
 			}
 			return "SUCCESS";
 		} catch (SQLException e) {
-			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n"
-					+ "SQL State: " + e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
+			message = "SQL Exception occurred!\n" + "Error Code: " + e.getErrorCode() + "\n" + "SQL State: "
+					+ e.getSQLState() + "\n" + "Message :" + e.getMessage() + "\n\n";
 			messageBean.setErrorMessage(message);
 			messageBean.setRenderErrorMessage(true);
+			e.printStackTrace();
 			return "FAIL";
 		}
 	}
@@ -280,30 +233,30 @@ public class DBAccessBean {
 			result = ResultSupport.toResult(resultSet);
 		}
 	}
+
 	public List<String> executequeryList(String query) {
 
 		List<String> queryList = new ArrayList<String>();
 		try {
 			execute(query);
-			
-				if (resultSet != null) {
-					int numOfCols = resultSetMetaData.getColumnCount();
-					resultSet.last();
-					numOfRows = resultSet.getRow();
-					resultSet.beforeFirst();
-					while (resultSet.next()) {
-						String[] output = new String[numOfCols];
 
-						for (int i = 0; i < numOfCols; i++) {
-							output[i] = resultSet.getString(i + 1);
-							queryList.add(output[i]);
-						}
-						
+			if (resultSet != null) {
+				int numOfCols = resultSetMetaData.getColumnCount();
+				resultSet.last();
+				numOfRows = resultSet.getRow();
+				resultSet.beforeFirst();
+				while (resultSet.next()) {
+					String[] output = new String[numOfCols];
+
+					for (int i = 0; i < numOfCols; i++) {
+						output[i] = resultSet.getString(i + 1);
+						queryList.add(output[i]);
 					}
-					
-				
+
+				}
+
 			}
-			
+
 		} catch (SQLException e) {
 			System.err.println("SQLState: " + ((SQLException) e).getSQLState());
 
@@ -314,4 +267,39 @@ public class DBAccessBean {
 		}
 		return queryList;
 	}
+
+	public List<String> getColumnNamesSelected() {
+		return columnNamesSelected;
+	}
+
+	public ResultSetMetaData getResultSetMetaData() {
+		return resultSetMetaData;
+	}
+
+	private Result result;
+
+	public Result getResult() {
+		return result;
+	}
+
+	public ResultSet getResultSet() {
+		return resultSet;
+	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public int getNumOfCols() {
+		return numOfCols;
+	}
+
+	public int getNumOfRows() {
+		return numOfRows;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
 }

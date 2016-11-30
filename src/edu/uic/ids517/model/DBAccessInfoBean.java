@@ -10,7 +10,7 @@ public class DBAccessInfoBean {
 
 	public DBAccessInfoBean() {
 		this.userName = "f16g321";
-		this.password = "g3218fQHJx";//g3218fQHJx
+		this.password = "g3218fQHJx";
 		this.dbms = "MySQL";
 		this.dbmsHost = "131.193.209.57";
 		this.dbSchema = "f16g321";
